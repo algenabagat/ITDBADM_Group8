@@ -83,6 +83,18 @@
             </div>
           </div>
         </div>
+        <?php
+    // Test database connection
+    require_once 'config.php';
+    $conn = getDBConnection($host, $user, $password, $database, $port);
+    
+    if ($conn) {
+        echo "<div style='background: green; color: white; padding: 10px;'>Database Connected!</div>";
+        $conn->close();
+    } else {
+        echo "<div style='background: red; color: white; padding: 10px;'>Database Connection Failed!</div>";
+    }
+?>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

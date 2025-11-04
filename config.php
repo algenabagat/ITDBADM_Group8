@@ -1,19 +1,25 @@
-<?php
-  /* Change my_username/my_password of ur database here */
-  
-  $my_serverName = "localhost";
-  $my_username = "root";
-  $my_password = "DLSU1234!";
-  $my_database = "watch_db";
-  $my_port = 3306   ;
-  
-  function getDBConnection($serverName, $username, $password, $database, $port) {
-    $conn = new mysqli($serverName, $username, $password, $database, $port);
+<?php 
+/* Change my_username/my_password of ur database here */
+$host = "localhost";
+$user = "root";
+$password = "DLSU1234!";
+$database = "watch_db";
+$port = 3306;
 
-		if ($conn->connect_error) {
-			die("Connection failed: " . $conn->connect_error);
-		}
-
+function getDBConnection($host, $user, $password, $database, $port) {
+    $conn = new mysqli($host, $user, $password, $database, $port);
+    
+    if ($conn->connect_error) {
+        return false;
+    }
     return $conn;
-  }
+}
+
+// Test connection directly in config
+$test_conn = new mysqli($host, $user, $password, $database, $port);
+if ($test_conn->connect_error) {
+    die("Connection failed: " . $test_conn->connect_error);
+}
+echo "✅ Connected successfully to MySQL database!";
+$test_conn->close();
 ?>
