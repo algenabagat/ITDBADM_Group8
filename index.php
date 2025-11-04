@@ -12,24 +12,9 @@
 </head>
   <body>
     <div class="container-fluid">
-        <div class="navbar">
-          <h1>Zeit</h1>
-          
-          <div class="nav-links">
-            <a href="shop.php">Shop</a>
-            <a href="new-arrivals.php">New Arrivals</a>
-            <a href="about-us.php">About Us</a>
-            <a href="brands.php">Brands</a>
-          </div>
-
-          <div class="icons">
-            <img src="img/profile-icon.svg" alt="Profile">
-            <div style="position: relative;">
-              <img src="img/cart-icon.svg" alt="Cart">
-              <span class="cart-count">0</span>
-            </div>
-          </div>
-        </div>
+      
+    <!-- Navbar Section -->
+    <?php require 'header-navbar.php' ?>
         
         <!-- Carousel Section -->
         <div class="carousel-section">
@@ -54,7 +39,7 @@
         </div>
         
         <!-- New Arrivals Section -->
-        <div class="new-arrivals-section">
+        <div id="new-arrivals" class="new-arrivals-section">
           <h1>New Arrivals</h1>
           <div class='card-section'>
             <!-- Product 1 -->

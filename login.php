@@ -16,8 +16,9 @@
         <img src="img/watch.jpg" alt="Watch Image" class="watch-image">
       </div>
       <div class="right-section">
-        <button class="back-btn" onclick="window.location.href='#'">
-          <img src="img/back-icon.svg" alt="Back" class="back-icon"> Back </button>
+        <button class="back-btn" onclick="window.location.href='index.php'">
+          <img src="img/back-icon.svg" alt="Back" class="back-icon"> Back 
+        </button>
         <div class="login-container">
             <h1> Account Login </h1>
             <p class="login-description"> If you are already a member you can login with your email address and password.</p>
