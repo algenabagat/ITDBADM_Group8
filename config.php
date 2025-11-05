@@ -20,6 +20,5 @@ $test_conn = new mysqli($host, $user, $password, $database, $port);
 if ($test_conn->connect_error) {
     die("Connection failed: " . $test_conn->connect_error);
 }
-echo "✅ Connected successfully to MySQL database!";
 $test_conn->close();
 ?>

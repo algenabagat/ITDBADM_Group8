@@ -27,7 +27,7 @@ CREATE TABLE `branches` (
   `branch_name` varchar(100) NOT NULL,
   `location` varchar(150) NOT NULL,
   PRIMARY KEY (`branch_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,6 +36,7 @@ CREATE TABLE `branches` (
 
 LOCK TABLES `branches` WRITE;
 /*!40000 ALTER TABLE `branches` DISABLE KEYS */;
+INSERT INTO `branches` VALUES (1,'Manila Branch','Malate, Manila'),(2,'BGC Branch','Bonifacio Global City, Taguig');
 /*!40000 ALTER TABLE `branches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -51,7 +52,7 @@ CREATE TABLE `brands` (
   `brand_name` varchar(100) NOT NULL,
   `country` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`brand_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,6 +61,7 @@ CREATE TABLE `brands` (
 
 LOCK TABLES `brands` WRITE;
 /*!40000 ALTER TABLE `brands` DISABLE KEYS */;
+INSERT INTO `brands` VALUES (1,'Seiko','Japan'),(2,'Hamilton','Switzerland'),(3,'Tissot','Switzerland'),(4,'Orient Bambino','Japan'),(5,'Certina','Switzerland');
 /*!40000 ALTER TABLE `brands` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -104,7 +106,7 @@ CREATE TABLE `categories` (
   `category_id` int NOT NULL AUTO_INCREMENT,
   `category_name` varchar(100) NOT NULL,
   PRIMARY KEY (`category_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,6 +115,7 @@ CREATE TABLE `categories` (
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
+INSERT INTO `categories` VALUES (1,'Dress Watch'),(2,'Sport Watch'),(3,'Casual Watch'),(4,'Luxury Watch'),(5,'Diver Watch');
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -128,7 +131,7 @@ CREATE TABLE `currencies` (
   `currency_code` char(3) NOT NULL,
   `exchange_rate` decimal(10,4) NOT NULL,
   PRIMARY KEY (`currency_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -137,6 +140,7 @@ CREATE TABLE `currencies` (
 
 LOCK TABLES `currencies` WRITE;
 /*!40000 ALTER TABLE `currencies` DISABLE KEYS */;
+INSERT INTO `currencies` VALUES (1,'PHP',1.0000),(2,'USD',0.0180),(3,'EUR',0.0165);
 /*!40000 ALTER TABLE `currencies` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,7 +243,7 @@ CREATE TABLE `payment_methods` (
   `payment_method_id` int NOT NULL AUTO_INCREMENT,
   `method_name` enum('Cash','Credit Card','PayPal','GCash') NOT NULL,
   PRIMARY KEY (`payment_method_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,6 +252,7 @@ CREATE TABLE `payment_methods` (
 
 LOCK TABLES `payment_methods` WRITE;
 /*!40000 ALTER TABLE `payment_methods` DISABLE KEYS */;
+INSERT INTO `payment_methods` VALUES (1,'Cash'),(2,'Credit Card'),(3,'PayPal'),(4,'GCash');
 /*!40000 ALTER TABLE `payment_methods` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -318,7 +323,7 @@ CREATE TABLE `products` (
   CONSTRAINT `fk_products_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`branch_id`),
   CONSTRAINT `fk_products_brand` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`brand_id`),
   CONSTRAINT `fk_products_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -327,6 +332,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
+INSERT INTO `products` VALUES (1,1,1,'Men',1,'Seiko Presage Cocktail Time SRPB43','Automatic dress watch inspired by cocktail bar aesthetics',25000.00,15,'Yes','img/products/seiko_presage_cocktail_time_srpb43.png','2025-11-05 09:32:52','Blue','Round','Analog','Black','Leather','Formal'),(2,1,1,'Men',1,'Seiko 5 Sports SRPD55','Robust automatic sports watch with 100m water resistance',18000.00,20,'Yes','img/products/seiko_5_sports_srpd55.png','2025-11-05 09:35:55','Black','Round','Analog','Black','Metal','Sport'),(3,1,1,'Women',1,'Seiko Lukia SSVW184','Elegant women’s automatic watch with rose-gold accents',23000.00,10,'Yes','img/products/seiko_lukia_ssvw184.jpg','2025-11-05 09:36:47','White','Round','Analog','Rose Gold','Metal','Casual'),(4,1,1,'Men',1,'Seiko Prospex SRPC93 \"Save the Ocean\"','Dive watch with textured dial and 200m water resistance',32000.00,12,'Yes','img/products/seiko_prospex_srpc93.jpg','2025-11-05 09:36:58','Blue','Round','Analog','Blue','Rubber','Sport'),(5,1,1,'Unisex',1,'Seiko Solar Chronograph SSC209','Solar-powered chronograph with alarm and 100 metre water resistance',22000.00,18,'Yes','img/products/seiko_solar_chronograph_ssc209.jpg','2025-11-05 09:37:05','Silver','Round','Analog','Black','Leather','Casual');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -341,7 +347,7 @@ CREATE TABLE `roles` (
   `role_id` int NOT NULL AUTO_INCREMENT,
   `role_name` enum('Customer','Admin','Staff') NOT NULL,
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -350,6 +356,7 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+INSERT INTO `roles` VALUES (1,'Admin'),(2,'Staff'),(3,'Customer');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -373,7 +380,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `email` (`email`),
   KEY `fk_users_role` (`role_id`),
   CONSTRAINT `fk_users_role` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -382,6 +389,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,1,'Algen','Abagat','algen_abagat@zeit.com','admin123','09171234567','2025-11-05'),(2,1,'Cody','Casem','cody_casem@zeit.com','admin123','09181234567','2025-11-05'),(3,1,'Albrecht','Coliat','albrech_coliat@zeit.com','admin123','09991234567','2025-11-05'),(4,1,'Ken','Latido','ken_latido@zeit.com','admin123','09998726337','2025-11-05'),(5,2,'Michael','Jackson','mj_heehee@gmail.com','password123','09201234567','2025-11-05'),(6,3,'Frank','Sinatra','fsinatra@gmail.com','password123','09351234567','2025-11-05');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -394,4 +402,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-04 16:39:29
+-- Dump completed on 2025-11-05  9:40:41

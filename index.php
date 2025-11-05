@@ -38,63 +38,53 @@
           </div>
         </div>
         
-        <!-- New Arrivals Section -->
-        <div id="new-arrivals" class="new-arrivals-section">
-          <h1>New Arrivals</h1>
-          <div class='card-section'>
-            <!-- Product 1 -->
-            <div class='item-card'>
-              <div class="card-image"></div>
-              <div class="card-content">
-                <h3 class="product-name">Zone/Mishevery G</h3>
-                <p class="product-price">$159</p>
-                <button class="add-to-cart-btn">Add to Cart</button>
-              </div>
-            </div>
-            
-            <!-- Product 2 -->
-            <div class='item-card'>
-              <div class="card-image"></div>
-              <div class="card-content">
-                <h3 class="product-name">Remedies Authoristic</h3>
-                <p class="product-price">$157</p>
-                <button class="add-to-cart-btn">Add to Cart</button>
-              </div>
-            </div>
-            
-            <!-- Product 3 -->
-            <div class='item-card'>
-              <div class="card-image"></div>
-              <div class="card-content">
-                <h3 class="product-name">Sierra Large Dial</h3>
-                <p class="product-price">$166</p>
-                <button class="add-to-cart-btn">Add to Cart</button>
-              </div>
-            </div>
-            
-            <!-- Product 4 -->
-            <div class='item-card'>
-              <div class="card-image"></div>
-              <div class="card-content">
-                <h3 class="product-name">Sierra Large Dial</h3>
-                <p class="product-price">$166</p>
-                <button class="add-to-cart-btn">Add to Cart</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <?php
-    // Test database connection
+<!-- New Arrivals Section -->
+<div id="new-arrivals" class="new-arrivals-section">
+  <h1>New Arrivals</h1>
+  <div class='card-section'>
+    <?php
     require_once 'config.php';
     $conn = getDBConnection($host, $user, $password, $database, $port);
     
     if ($conn) {
-        echo "<div style='background: green; color: white; padding: 10px;'>Database Connected!</div>";
+        // Query to get the 4 most recent products
+        $sql = "SELECT product_name, price, image_url FROM products 
+                ORDER BY date_added DESC 
+                LIMIT 4";
+        
+        $result = $conn->query($sql);
+        
+        if ($result && $result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                $product_name = htmlspecialchars($row["product_name"]);
+                $price = number_format($row["price"], 2);
+                $image_url = $row["image_url"] ? htmlspecialchars($row["image_url"]) : 'img/products/default-watch.jpg';
+                
+                echo "
+                <div class='item-card'>
+                  <div class='card-image'>
+                    <img src='{$image_url}' alt='{$product_name}'>
+                  </div>
+                  <div class='card-content'>
+                    <h3 class='product-name'>{$product_name}</h3>
+                    <p class='product-price'>₱{$price}</p>
+                    <button class='add-to-cart-btn'>Add to Cart</button>
+                  </div>
+                </div>";
+            }
+        } else {
+            echo "<p>No products found.</p>";
+        }
+        
         $conn->close();
     } else {
-        echo "<div style='background: red; color: white; padding: 10px;'>Database Connection Failed!</div>";
+        echo "<p>Unable to load products.</p>";
     }
-?>
+    ?>
+  </div>
+</div>
+        </div>
+      </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
