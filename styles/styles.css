@@ -301,3 +301,14 @@
         margin-bottom: 20px;
     }
 }
+
+.navbar > a {
+    text-decoration: none;
+    color: inherit; 
+}
+
+.navbar > a:hover,
+.navbar > a:focus {
+    text-decoration: none;
+    color: inherit;
+}

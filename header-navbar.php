@@ -9,7 +9,7 @@ $conn = getDBConnection($host, $user, $password, $database, $port);
     <a href="shop.php">Shop</a>
     <a href="#new-arrivals">New Arrivals</a>
     <a href="about.php">About Us</a>
-    <label for="brands">Brands</label>
+    <a href="about.php">Brands</a>
   </div>
 
   <div class="icons">

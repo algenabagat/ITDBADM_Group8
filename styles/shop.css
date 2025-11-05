@@ -6,3 +6,44 @@
     padding: 0px;
     font-family: 'Inter', sans-serif;
 }
+
+.shop-container {
+    background-color: #E3DAD8;
+    padding: 50px 100px;
+    display: flex;
+}
+
+.filter-bar {
+    height: 666px;
+    background-color: #FFF;
+    width: 363px;
+    border-radius: 8px;
+    
+}
+
+.products-container {
+    flex-grow: 1;
+    flex-direction: column;
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 100px;
+}
+
+.products-container p {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: #767575;
+}
+
+
+.watch-grid {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.item-card {
+    margin-bottom: 50px;
+}
