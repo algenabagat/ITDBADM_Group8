@@ -26,7 +26,16 @@
         </select>
       </div>
       <ul class="filter-list">
-        <li><img src="placeholder" alt="arrow">Placeholder</li>
+        <li><img src="placeholder" alt="arrow"> Brands</li>
+        <li><img src="placeholder" alt="arrow"> Type</li>
+        <li><img src="placeholder" alt="arrow"> Gender</li>
+        <li><img src="placeholder" alt="arrow"> Price</li>
+        <li><img src="placeholder" alt="arrow"> Dial Color</li>
+        <li><img src="placeholder" alt="arrow"> Dial Shape</li>
+        <li><img src="placeholder" alt="arrow"> Dial Type</li>
+        <li><img src="placeholder" alt="arrow"> Strap Color</li>
+        <li><img src="placeholder" alt="arrow"> Strap Material</li>
+        <li><img src="placeholder" alt="arrow"> Style</li>
       </ul>
       <div class="products-container">
         <p> Item 1 - 9 of 4232 </p>
