@@ -245,6 +245,54 @@
 .item-card {
     flex: 0 0 calc(25% - 26.25px); /* 25% width minus gap */
 }
+
+/* filter stuff*/
+.filter-bar {
+    background-color: #F9F9F9;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+}
+
+.filter-current {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.current-filter {
+    color: #333333;
+}
+
+.filter-line-border {
+    border: none;
+    border-top: 1px solid #322C2C;
+    border-bottom: 1px solid #322C2C;
+    margin: 10px 0;
+}
+
+.filter-row {
+    display: flex;
+    justify-content: flex-start;
+    margin: 10px 0;
+}
+
+.filter-dropdown {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #CCCCCC;
+    background-color: #FFFFFF;
+}
+
+.filter-list {
+    font-weight: 400;
+    font-size: 14px;
+    margin-bottom: 12px;
+    text-align: left;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 1200px) {
     .navbar {

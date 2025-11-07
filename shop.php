@@ -16,7 +16,18 @@
     <?php require 'header-navbar.php' ?>
     <div class="shop-container">
       <div class="filter-bar">
+        <div class ="filter-current">
+          FILTER: <span class="current-filter">All</span>
+        </div>
       </div>
+      <div class="filter-row">
+        <select class="filter-dropdown">
+          <option value="">Placeholder</option>
+        </select>
+      </div>
+      <ul class="filter-list">
+        <li><img src="placeholder" alt="arrow">Placeholder</li>
+      </ul>
       <div class="products-container">
         <p> Item 1 - 9 of 4232 </p>
         <div class="watch-grid">
