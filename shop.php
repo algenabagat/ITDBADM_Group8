@@ -46,7 +46,7 @@
     
     if ($conn) {
         // Query to get the 4 most recent products
-        $sql = "SELECT product_name, price, image_url FROM products 
+        $sql = "SELECT product_id, product_name, price, image_url FROM products 
                 ORDER BY date_added DESC";
         
         $result = $conn->query($sql);
@@ -56,9 +56,10 @@
                 $product_name = htmlspecialchars($row["product_name"]);
                 $price = number_format($row["price"], 2);
                 $image_url = $row["image_url"] ? htmlspecialchars($row["image_url"]) : 'img/products/default-watch.jpg';
+                $product_id = (int)$row['product_id'];
                 
                 echo "
-                <div class='item-card'>
+                <div class='item-card' onclick=\"window.location.href='view-item.php?product_id={$product_id}';\">
                   <div class='card-image'>
                     <img src='{$image_url}' alt='{$product_name}'>
                   </div>

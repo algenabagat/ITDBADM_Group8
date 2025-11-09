@@ -47,8 +47,7 @@
     $conn = getDBConnection($host, $user, $password, $database, $port);
     
     if ($conn) {
-        // Query to get the 4 most recent products
-        $sql = "SELECT product_name, price, image_url FROM products 
+        $sql = "SELECT product_id, product_name, price, image_url FROM products 
                 ORDER BY date_added DESC 
                 LIMIT 4";
         
@@ -56,12 +55,13 @@
         
         if ($result && $result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
+                $product_id   = (int)$row['product_id'];
                 $product_name = htmlspecialchars($row["product_name"]);
-                $price = number_format($row["price"], 2);
-                $image_url = $row["image_url"] ? htmlspecialchars($row["image_url"]) : 'img/products/default-watch.jpg';
+                $price        = number_format($row["price"], 2);
+                $image_url    = $row["image_url"] ? htmlspecialchars($row["image_url"]) : 'img/products/default-watch.jpg';
                 
                 echo "
-                <div class='item-card'>
+                <div class='item-card' onclick=\"window.location.href='view-item.php?product_id={$product_id}';\">
                   <div class='card-image'>
                     <img src='{$image_url}' alt='{$product_name}'>
                   </div>

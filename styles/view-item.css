@@ -1,0 +1,10 @@
+.item-view-container {
+    display: flex;
+    flex-direction: row;
+    margin: 80px auto;
+    padding: 20px;
+    border-radius: 8px;
+    height: 672px;
+    width: 1000px;
+    background-color: #FFFFFF;
+}
