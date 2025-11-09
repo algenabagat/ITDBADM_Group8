@@ -22,7 +22,7 @@
         <div class="login-container">
             <h1> Account Login </h1>
             <p class="login-description"> If you are already a member you can login with your email address and password.</p>
-            <form action="login.php" method="post">
+            <form action="login-process.php" method="post">
               <div class="mb-3">
                 <label for="email" class="form-label">Email <Address></Address></label>
                 <input type="text" class="form-control" id="email" name="email" required>
