@@ -1,3 +1,7 @@
+.container-fluid {
+    background-color: #E3DAD8;
+
+}
 .item-view-container {
     display: flex;
     flex-direction: row;
@@ -37,6 +41,7 @@
 /* keep the button below the image */
 .left-section .add-to-cart-btn {
     align-self: center;
+    width: 70%;
 
 }
 
@@ -63,4 +68,65 @@
 
 .item-details p {
     font-size: 18px;
+}
+
+/* Currency selector styles */
+.currency-selector {
+    margin: 8px 0 14px;
+    position: relative;
+    display: inline-block;
+}
+
+.currency-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.flag-icon {
+    width: 20px;
+    height: 14px;
+    display: inline-block;
+}
+
+.currency-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+    z-index: 2000;
+    min-width: 140px;
+}
+
+.currency-menu[hidden] { display: none; }
+
+.currency-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.currency-item:hover {
+    background: #f6f6f8;
+}
+
+/* ensure price is prominent */
+.item-price {
+    font-size: 28px;
+    font-weight: 800;
+    margin-top: 8px;
 }

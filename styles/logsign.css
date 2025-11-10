@@ -29,7 +29,7 @@
     flex-direction: column;
     justify-content: center;
     padding-left: 100px;
-    margin: 150px 100px 100px 100px;
+    margin: 80px 100px 100px 100px;
     width: 500px;
 }
 
@@ -107,3 +107,12 @@
 .form-label {
     font-size: 16px;
 }
+
+/* Add this block to control the right section vertical offset */
+.right-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 20px; /* adjust value to move further up/down */
+}
+

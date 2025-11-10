@@ -1,35 +1,64 @@
-<?php 
+<?php
 require_once 'config.php';
 $conn = getDBConnection($host, $user, $password, $database, $port);
 
-$firstName = $_POST['firstName'];
-$lastName = $_POST['lastName'];
-$email = $_POST['email'];
-$password = $_POST['password'];
-$confirmPassword = $_POST['confirmPassword'];
+$firstName = trim($_POST['firstName'] ?? '');
+$lastName  = trim($_POST['lastName'] ?? '');
+$email     = trim($_POST['email'] ?? '');
+$number    = trim($_POST['number'] ?? '');
+$password  = $_POST['password'] ?? '';
+$confirmPassword = $_POST['confirmPassword'] ?? '';
 
-$checkEmail = "SELECT * FROM users WHERE email = '$email'";
-$isRegistered = $conn->query($checkEmail);
-
-if ($isRegistered->num_rows > 0) {
-    $errM = "Email is already registered";
-    header("Location: signup.php?error=$errM");
+if ($firstName === '' || $lastName === '' || $email === '' || $password === '' || $confirmPassword === '') {
+    header("Location: signup.php?error=" . urlencode('Please fill all required fields'));
     exit();
 }
-else {
-    if ($password !== $confirmPassword) {
-        $errM = "Passwords do not match";
-        header("Location: signup.php?error=$errM");
-        exit();
-    }
 
-    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    header("Location: signup.php?error=" . urlencode('Invalid email address'));
+    exit();
+}
 
-    $insertUser = $conn->prepare("INSERT INTO users (first_name, last_name, email, password_hash, role_id) VALUES (?, ?, ?, ?, 3)");
-    $insertUser->bind_param("ssss", $firstName, $lastName, $email, $hashedPassword);
-    $insertUser->execute();
+if ($password !== $confirmPassword) {
+    header("Location: signup.php?error=" . urlencode('Passwords do not match'));
+    exit();
+}
 
-    header("Location: login.php?success=Account created successfully. Please log in.");
+$phone = preg_replace('/[^\d\+\-\s]/', '', $number);
+
+$checkStmt = $conn->prepare("SELECT 1 FROM users WHERE email = ? LIMIT 1");
+if (!$checkStmt) {
+    header("Location: signup.php?error=" . urlencode('Server error'));
+    exit();
+}
+$checkStmt->bind_param('s', $email);
+$checkStmt->execute();
+$checkStmt->store_result();
+if ($checkStmt->num_rows > 0) {
+    $checkStmt->close();
+    $conn->close();
+    header("Location: signup.php?error=" . urlencode('Email is already registered'));
+    exit();
+}
+$checkStmt->close();
+
+$hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+$insertUser = $conn->prepare("INSERT INTO users (first_name, last_name, email, password_hash, role_id, phone) VALUES (?, ?, ?, ?, 3, ?)");
+if (!$insertUser) {
+    header("Location: signup.php?error=" . urlencode('Server error'));
+    exit();
+}
+$insertUser->bind_param("sssss", $firstName, $lastName, $email, $hashedPassword, $phone);
+$ok = $insertUser->execute();
+$insertUser->close();
+$conn->close();
+
+if ($ok) {
+    header("Location: login.php?success=" . urlencode('Account created successfully. Please log in.'));
+    exit();
+} else {
+    header("Location: signup.php?error=" . urlencode('Failed to create account'));
     exit();
 }
 ?>
