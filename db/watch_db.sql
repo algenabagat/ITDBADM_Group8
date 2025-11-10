@@ -373,14 +373,14 @@ CREATE TABLE `users` (
   `first_name` varchar(100) DEFAULT NULL,
   `last_name` varchar(100) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
-  `password` varchar(100) DEFAULT NULL,
+  `password_hash` varchar(255) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `created_at` date DEFAULT (curdate()),
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`),
   KEY `fk_users_role` (`role_id`),
   CONSTRAINT `fk_users_role` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -389,7 +389,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,1,'Algen','Abagat','algen_abagat@zeit.com','admin123','09171234567','2025-11-05'),(2,1,'Cody','Casem','cody_casem@zeit.com','admin123','09181234567','2025-11-05'),(3,1,'Albrecht','Coliat','albrech_coliat@zeit.com','admin123','09991234567','2025-11-05'),(4,1,'Ken','Latido','ken_latido@zeit.com','admin123','09998726337','2025-11-05'),(5,2,'Michael','Jackson','mj_heehee@gmail.com','password123','09201234567','2025-11-05'),(6,3,'Frank','Sinatra','fsinatra@gmail.com','password123','09351234567','2025-11-05');
+INSERT INTO `users` VALUES (1,1,'Algen','Abagat','algen_abagat@zeit.com','$2y$10$kOFXnhncFD3DcKz.3SyIV.Hd9UbcofzMsPwf1qeDC7TcRSeKiPB8q','09171234567','2025-11-05'),(2,1,'Cody','Casem','cody_casem@zeit.com','$2y$10$tkEhOOaeq7PpWLeQUAN92OoD4fgzoWFRtApfmnU28gvrgyJM3tgkO','09181234567','2025-11-05'),(3,1,'Albrecht','Coliat','albrech_coliat@zeit.com','$2y$10$6nk5snJfFCpvpEF7Oaj.8u2YCzwnWCp4BiXChW/oWZHhhcpaxGEbi','09991234567','2025-11-05'),(4,1,'Ken','Latido','ken_latido@zeit.com','$2y$10$jGSdgzYeS7gA66cUqA3HuetSN6c8u4VFAtStWuIa/9Tb0EoTRC4mS','09998726337','2025-11-05'),(5,2,'Michael','Jackson','mj_heehee@gmail.com','$2y$10$QhiCPxfVo6ANBnYM8QwZHeJ/EhF9MWsURvd.hpTBxIg3nQ40fALhS','09201234567','2025-11-05'),(6,3,'Frank','Sinatra','fsinatra@gmail.com','$2y$10$fXqwx/GVc1qEw9IMMLWVw.MdnASiqRq.8Goa9TuuuThP/0Ij0z/Om','09351234567','2025-11-05'),(7,3,'Roja ','Dove','rojadove@gmail.com','$2y$10$FYe3VmEVRUTq9GtvNT.O6OD419ckSsGy8/GeZ0H/UQIZ/T1og/nlm',NULL,'2025-11-09');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -402,4 +402,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-05  9:40:41
+-- Dump completed on 2025-11-10 11:00:40

@@ -30,13 +30,17 @@ $conn = getDBConnection($host, $user, $password, $database, $port);
     $row = mysqli_fetch_object($result);
     if ($result && $result->num_rows > 0) {
         echo "<div class='item-view-container'>
+                <div class='left-section'>
                 <div class='item-image'>
                     <img src='" . htmlspecialchars($row->image_url) . "' alt='" . htmlspecialchars($row->product_name) . "' class='img-fluid'>
-                </div>
+                    </div>
+                    <button class='add-to-cart-btn'>Add to Cart</button>
+
+                    </div>
                 <div class='item-details'>
-                    <h2>" . htmlspecialchars($row->product_name) . "</h2>
-                    <p>₱" . number_format($row->price, 2) . "</p>
-                    <p>" . nl2br(htmlspecialchars($row->description)) . "</p>
+                    <h2>" . htmlspecialchars($row->product_name, ENT_QUOTES, 'UTF-8') . "</h2>
+                    <p class='item-price'>₱" . number_format($row->price, 2) . "</p>
+                    <p>" . nl2br(htmlspecialchars($row->description, ENT_QUOTES, 'UTF-8')) . "</p>
                     <p> Brand: " . htmlspecialchars($row->brand_name) .  "</p>
                     <p> Dial Color: " . htmlspecialchars($row->dial_color) .  "</p>
                     <p> Dial Shape: " . htmlspecialchars($row->dial_shape) .  "</p>

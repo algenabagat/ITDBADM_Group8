@@ -47,36 +47,73 @@
 
 .icons {
     display: flex;
-    flex-direction: row;
-    gap: 20px;
     align-items: center;
-    flex-shrink: 0;
+    gap: 16px; /* equal space between each top-level icon/group */
+}
+
+.icons > div {
+    position: relative; /* keep existing behavior */
+    display: flex;
+    align-items: center;
+    gap: 12px; /* spacing between items inside the group (cart, count, logout) */
+}
+
+.icons a,
+.icons button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
 }
 
 .icons img {
-    width: 35px;
-    height: 35px;
-    cursor: pointer;
-    transition: opacity 0.3s ease;
+    width: 32px;
+    height: 32px;
+    display: block;
+    margin: 5px;
 }
 
-.icons img:hover {
-    opacity: 0.7;
+.icons .icons-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.cart-link {
+    position: relative; /* cart-count will be positioned relative to this */
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    text-decoration: none;
+    color: inherit;
 }
 
 .cart-count {
-    background-color: #333;
-    color: white;
-    border-radius: 50%;
-    width: 18px;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
     height: 18px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: black;
+    color: #fff;
     font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: absolute;
-    margin-left: 15px;
-    margin-top: -10px;
+}
+
+.logout-btn img {
+    width: 32px;
+    height: 32px;
+    display: block;
 }
 
 .carousel-section {
@@ -350,6 +387,10 @@
     }
 }
 
+html, body {
+    font-family: 'Inter', sans-serif;
+}
+
 .navbar > a {
     text-decoration: none;
     color: inherit; 
@@ -359,4 +400,10 @@
 .navbar > a:focus {
     text-decoration: none;
     color: inherit;
+}
+
+.navbar > a h1 {
+    margin: 0;
+    font-family: inherit;
+    font-weight: 700; 
 }
