@@ -35,7 +35,7 @@
                 <input type="checkbox" id="rememberMe" name="rememberMe" value="yes">
                 <label for="rememberMe"> Remember Me</label>
               </div>
-              <button type="submit" class="login-btn" onclick="window.location.href='index.php'">Login</button>
+              <button type="submit" class="login-btn">Login</button>
             </form>
               <div class="sign-up">
                 <p> Don't have an account? <a href="signup.php"> Sign Up Here </a> </p>

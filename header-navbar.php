@@ -1,5 +1,9 @@
 <?php
-session_start();
+// avoid duplicate session_start() warnings
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 require_once 'config.php';
 $conn = getDBConnection($host, $user, $password, $database, $port);
 
