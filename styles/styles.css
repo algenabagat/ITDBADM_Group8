@@ -285,10 +285,15 @@
 
 /* filter stuff*/
 .filter-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
     background-color: #F9F9F9;
     padding: 20px;
     margin-bottom: 30px;
     border-radius: 8px;
+    width: 100%;
+    max-width: 1200px;
 }
 
 .filter-current {
@@ -296,6 +301,14 @@
     font-size: 16px;
     margin-bottom: 10px;
     text-align: left;
+}
+
+.filter-more {
+    font-weight: 600;
+    font-size: 12px;
+    margin-bottom: 10px;
+    text-align: left;
+    flex-wrap: nowrap;
 }
 
 .current-filter {
@@ -306,21 +319,30 @@
     border: none;
     border-top: 1px solid #322C2C;
     border-bottom: 1px solid #322C2C;
-    margin: 10px 0;
+    margin: 2px 0;
 }
 
 .filter-row {
     display: flex;
-    justify-content: flex-start;
-    margin: 10px 0;
+    align-items: center;
+    margin: 2px 0;
+    width: 90%;
+    flex-wrap: wrap;
+}
+
+.filter-item {
+    flex-shrink: 0;
 }
 
 .filter-dropdown {
     padding: 8px 12px;
     font-size: 14px;
     border-radius: 5px;
-    border: 1px solid #CCCCCC;
+    border: none;
     background-color: #FFFFFF;
+    cursor: pointer;
+    min-width: 140px;
+    
 }
 
 .filter-list {
@@ -328,6 +350,13 @@
     font-size: 14px;
     margin-bottom: 12px;
     text-align: left;
+}
+
+.filter-list li {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    margin-bottom: 5px;
 }
 
 /* Mobile responsiveness */
