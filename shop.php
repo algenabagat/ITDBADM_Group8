@@ -24,79 +24,150 @@
           <div class ="filter-current">
             FILTER: <span class="current-filter">All</span>
           </div>
-        <div class="filter-line-border"></div>
         <div class="filter-row">
-          <!-- Backend WIP: Will be done before monday -->
+          <div class="filter-line-border"></div>
+          <form method="GET" action="shop.php">
           <div class="filter-item">
-            <select class="filter-dropdown">
+            <select name="brands" class="filter-dropdown">
               <option value="">Brands</option>
-              <option value=""> </option>
+              <?php
+                $brandQuery = "SELECT DISTINCT brand_name FROM brands ORDER BY brand_name ASC";
+                if ($result = $conn->query($brandQuery)) {
+                    while ($row = $result->fetch_assoc()) {
+                        $brand = htmlspecialchars($row['brand_name']);
+                        echo "<option value='{$brand}'>{$brand}</option>";
+                    }
+                }
+              ?>
             </select>
           </div>
 
           <div class="filter-item">
-            <select class="filter-dropdown">
-              <option value="">Type</option>
-              <option value=""> </option>
+            <select name="categories" class="filter-dropdown">
+              <option value="">Categories</option>
+              <?php
+                $categoryQuery = "SELECT DISTINCT category_name FROM categories ORDER BY category_name ASC";
+                if ($result = $conn->query($categoryQuery)) {
+                    while ($row = $result->fetch_assoc()) {
+                        $category = htmlspecialchars($row['category_name']);
+                        echo "<option value='{$category}'>{$category}</option>";
+                    }
+                }
+              ?>
             </select>
           </div>
 
           <div class="filter-item">
-            <select class="filter-dropdown">
+            <select name="gender" class="filter-dropdown">
               <option value="">Gender</option>
-              <option value=""> </option>
+              <?php
+                $genderQuery = "SELECT DISTINCT gender FROM products ORDER BY gender ASC";
+                if ($result = $conn->query($genderQuery)) {
+                    while ($row = $result->fetch_assoc()) {
+                        $gender = htmlspecialchars($row['gender']);
+                        echo "<option value='{$gender}'>{$gender}</option>";
+                    }
+                }
+              ?>
             </select>
           </div>
 
           <div class="filter-item">
-            <select class="filter-dropdown">
+            <select name="price" class="filter-dropdown">
               <option value="">Price</option>
-              <option value=""> </option>
+              <?php
+                $priceQuery = "SELECT DISTINCT price FROM products ORDER BY price ASC";
+                if ($result = $conn->query($priceQuery)) {
+                    while ($row = $result->fetch_assoc()) {
+                        $price = htmlspecialchars($row['price']);
+                        echo "<option value='{$price}'>{$price}</option>";
+                    }
+                }
+              ?>
             </select>
           </div>
 
           <div class="filter-item">
-            <select class="filter-dropdown">
+            <select name="dial_color" class="filter-dropdown">
               <option value="">Dial Color</option>
-              <option value=""> </option>
+              <?php
+                $dialcolorQuery = "SELECT DISTINCT dial_color FROM products ORDER BY dial_color ASC";
+                if ($result = $conn->query($dialcolorQuery)) {
+                    while ($row = $result->fetch_assoc()) {
+                        $dial_color = htmlspecialchars($row['dial_color']);
+                        echo "<option value='{$dial_color}'>{$dial_color}</option>";
+                    }
+                }
+              ?>
             </select>
           </div>
 
           <div class="filter-item">
-            <select class="filter-dropdown">
+            <select name="dial_shape" class="filter-dropdown">
               <option value="">Dial Shape</option>
-              <option value=""> </option>
+              <?php
+                $dialshapeQuery = "SELECT DISTINCT dial_shape FROM products ORDER BY dial_shape ASC";
+                if ($result = $conn->query($dialshapeQuery)) {
+                    while ($row = $result->fetch_assoc()) {
+                        $dial_shape = htmlspecialchars($row['dial_shape']);
+                        echo "<option value='{$dial_shape}'>{$dial_shape}</option>";
+                    }
+                }
+              ?>
             </select>
           </div>
 
           <div class="filter-item">
-            <select class="filter-dropdown">
+            <select name="dial_type" class="filter-dropdown">
               <option value="">Dial Type</option>
-              <option value=""> </option>
+              <?php
+                $dialtypeQuery = "SELECT DISTINCT dial_type FROM products ORDER BY dial_type ASC";
+                if ($result = $conn->query($dialtypeQuery)) {
+                    while ($row = $result->fetch_assoc()) {
+                        $dial_type = htmlspecialchars($row['dial_type']);
+                        echo "<option value='{$dial_type}'>{$dial_type}</option>";
+                    }
+                }
+              ?>
             </select>
           </div>
 
           <div class="filter-item">
-            <select class="filter-dropdown">
+            <select name="strap_color" class="filter-dropdown">
               <option value="">Strap Color</option>
-              <option value=""> </option>
+              <?php
+                $strapcolorQuery = "SELECT DISTINCT strap_color FROM products ORDER BY strap_color ASC";
+                if ($result = $conn->query($strapcolorQuery)) {
+                    while ($row = $result->fetch_assoc()) {
+                        $strap_color = htmlspecialchars($row['strap_color']);
+                        echo "<option value='{$strap_color}'>{$strap_color}</option>";
+                    }
+                }
+              ?>
             </select>
           </div>
 
           <div class="filter-item">
-            <select class="filter-dropdown">
+            <select name="strap_material" class="filter-dropdown">
               <option value="">Strap Material</option>
-              <option value=""> </option>
+              <?php
+                $strapmaterialQuery = "SELECT DISTINCT strap_material FROM products ORDER BY strap_material ASC";
+                if ($result = $conn->query($strapmaterialQuery)) {
+                    while ($row = $result->fetch_assoc()) {
+                        $strap_material = htmlspecialchars($row['strap_material']);
+                        echo "<option value='{$strap_material}'>{$strap_material}</option>";
+                    }
+                }
+              ?>
             </select>
           </div>
+          
+          <div class="filter-line-border"></div>
 
-          <div class="filter-item">
-            <select class="filter-dropdown">
-              <option value="">Style</option>
-              <option value=""> </option>
-            </select>
+          <div class="filter-submit-row">
+            <button type="submit" class="filter-submit">Filter</button>
           </div>
-
+          </form>
         </div>
       </div>
       <?php
@@ -137,14 +208,66 @@
         </p>
               <div class="watch-grid">
           <?php
-          require_once 'config.php';
-          $conn = getDBConnection($host, $user, $password, $database, $port);
           
           if ($conn) {
-              // Query to get the 4 most recent products
-              $sql = "SELECT product_id, product_name, price, image_url FROM products 
-                      ORDER BY date_added DESC";
+
+              $filters = [];
+
+              if(!empty($_GET['brands'])) {
+                $brand = $conn->real_escape_string($_GET['brands']);
+                $filters[] = "brand_name = '{$brand}'";
+              }
               
+              if(!empty($_GET['categories'])) {
+                $category = $conn->real_escape_string($_GET['categories']);
+                $filters[] = "category_name = '{$category}'";
+              }
+
+              if(!empty($_GET['gender'])) {
+                $gender = $conn->real_escape_string($_GET['gender']);
+                $filters[] = "gender = '{$gender}'";
+              }
+
+              if(!empty($_GET['price'])) {
+                $price = $conn->real_escape_string($_GET['price']);
+                $filters[] = "price = '{$price}'";
+              }
+              
+              if(!empty($_GET['dial_color'])) {
+                $dial_color = $conn->real_escape_string($_GET['dial_color']);
+                $filters[] = "dial_color = '{$dial_color}'";
+              }
+              
+              if(!empty($_GET['dial_shape'])) {
+                $dial_shape = $conn->real_escape_string($_GET['dial_shape']);
+                $filters[] = "dial_shape = '{$dial_shape}'";
+              }
+              
+              if(!empty($_GET['dial_type'])) {
+                $dial_type = $conn->real_escape_string($_GET['dial_type']);
+                $filters[] = "dial_type = '{$dial_type}'";
+              }
+              
+              if(!empty($_GET['strap_color'])) {
+                $strap_color = $conn->real_escape_string($_GET['strap_color']);
+                $filters[] = "strap_color = '{$strap_color}'";
+              }
+              
+              if(!empty($_GET['strap_material'])) {
+                $strap_material = $conn->real_escape_string($_GET['strap_material']);
+                $filters[] = "strap_material = '{$strap_material}'";
+              }
+              
+              // Query to get the 4 most recent products
+              $sql = "SELECT product_id, product_name, price, image_url FROM products";
+              
+              // adds filters if theres any
+              if (count($filters) > 0) {
+                $sql .= " WHERE " . implode(" AND ", $filters);
+              }
+
+              $sql .= " ORDER BY date_added DESC";
+
               $result = $conn->query($sql);
               
               if ($result && $result->num_rows > 0) {
