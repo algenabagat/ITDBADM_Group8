@@ -156,6 +156,42 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                         </table>
                     </div>
                 </section>
+                <!-- Brands Management -->
+                <section id="brands" class="content-section">
+                    <div class="section-header">
+                        <h2>Brands Management</h2>
+                        <button class="btn btn-primary" onclick="openModal('addBrand')">Add Brand</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Brand Name</th>
+                                    <th>Country</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $brands_query = "SELECT * FROM brands ORDER BY brand_id ASC";
+                                $brands_result = $conn->query($brands_query);
+                                while ($brand = $brands_result->fetch_assoc()):
+                                ?>
+                                <tr>
+                                    <td><?php echo $brand['brand_id']; ?></td>
+                                    <td><?php echo htmlspecialchars($brand['brand_name']); ?></td>
+                                    <td><?php echo htmlspecialchars($brand['country'] ?? 'N/A'); ?></td>
+                                    <td class="actions">
+                                        <button class="btn btn-sm btn-edit" onclick="editBrand(<?php echo $brand['brand_id']; ?>)">Edit</button>
+                                        <button class="btn btn-sm btn-delete" onclick="deleteBrand(<?php echo $brand['brand_id']; ?>)">Delete</button>
+                                    </td>
+                                </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
 
                 <!-- Products Management -->
                 <section id="products" class="content-section">
@@ -546,6 +582,59 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
         </div>
     </div>
 
+                <!-- Add Brand Modal -->
+                <div id="addBrandModal" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Brand</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Brand Name</label>
+                                    <input type="text" id="addBrandName" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Country</label>
+                                    <input type="text" id="addBrandCountry" class="form-control">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="createBrand()">Create Brand</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Brand Modal -->
+                <div id="editBrandModal" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Brand</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="editBrandId">
+                                <div class="mb-3">
+                                    <label class="form-label">Brand Name</label>
+                                    <input type="text" id="editBrandName" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Country</label>
+                                    <input type="text" id="editBrandCountry" class="form-control">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="saveBrand()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
     <!-- Orders Modals -->
     <!-- View Order Modal -->
     <div id="viewOrderModal" class="modal fade" tabindex="-1">
@@ -739,6 +828,8 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                 openAddProductModal();
             } else if (modalType === 'addOrder') {
                 openAddOrderModal();
+            } else if (modalType === 'addBrand') {
+                openAddBrandModal();
             } else {
                 console.log('Opening modal:', modalType);
             }
@@ -1228,6 +1319,100 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                 }
             })
             .catch(err => { console.error(err); alert('Error creating order'); });
+        }
+
+        // ---- Brands Management ----
+        function openAddBrandModal() {
+            document.getElementById('addBrandName').value = '';
+            document.getElementById('addBrandCountry').value = '';
+            const modal = new bootstrap.Modal(document.getElementById('addBrandModal'));
+            modal.show();
+        }
+
+        function createBrand() {
+            const name = document.getElementById('addBrandName').value.trim();
+            const country = document.getElementById('addBrandCountry').value.trim();
+            if (!name) { alert('Please enter a brand name'); return; }
+
+            fetch('create-brand.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ brand_name: name, country: country })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Brand created');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addBrandModal'));
+                    if (modal) modal.hide();
+                    location.reload();
+                } else {
+                    alert('Create failed: ' + (data.message || 'unknown'));
+                }
+            })
+            .catch(err => { console.error(err); alert('Error creating brand'); });
+        }
+
+        function editBrand(brandId) {
+            fetch('get-brands.php')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const b = (data.brands || []).find(x => parseInt(x.brand_id) === parseInt(brandId));
+                        if (!b) return alert('Brand not found');
+                        document.getElementById('editBrandId').value = b.brand_id;
+                        document.getElementById('editBrandName').value = b.brand_name;
+                        document.getElementById('editBrandCountry').value = b.country || '';
+                        const modal = new bootstrap.Modal(document.getElementById('editBrandModal'));
+                        modal.show();
+                    } else {
+                        alert('Failed to load brands');
+                    }
+                }).catch(err => { console.error(err); alert('Error loading brands'); });
+        }
+
+        function saveBrand() {
+            const id = document.getElementById('editBrandId').value;
+            const name = document.getElementById('editBrandName').value.trim();
+            const country = document.getElementById('editBrandCountry').value.trim();
+            if (!name) return alert('Please enter a brand name');
+
+            fetch('update-brand.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ brand_id: id, brand_name: name, country: country })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Brand updated');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editBrandModal'));
+                    if (modal) modal.hide();
+                    location.reload();
+                } else {
+                    alert('Update failed: ' + (data.message || 'unknown'));
+                }
+            })
+            .catch(err => { console.error(err); alert('Error updating brand'); });
+        }
+
+        function deleteBrand(brandId) {
+            if (!confirm('Delete this brand?')) return;
+            fetch('delete-brand.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ brand_id: brandId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Brand deleted');
+                    location.reload();
+                } else {
+                    alert('Delete failed: ' + (data.message || 'unknown'));
+                }
+            })
+            .catch(err => { console.error(err); alert('Error deleting brand'); });
         }
     </script>
 </body>
