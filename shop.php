@@ -1,3 +1,8 @@
+<?php 
+  require_once 'config.php';
+  $conn = getDBConnection($host, $user, $password, $database, $port);
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -98,8 +103,6 @@
         <p> Item 1 - 9 of 4232 </p>
         <div class="watch-grid">
     <?php
-    require_once 'config.php';
-    $conn = getDBConnection($host, $user, $password, $database, $port);
     
     if ($conn) {
         // Query to get the 4 most recent products
