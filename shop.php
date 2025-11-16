@@ -24,8 +24,8 @@
           <div class ="filter-current">
             FILTER: <span class="current-filter">All</span>
           </div>
-        <div class="filter-row">
           <div class="filter-line-border"></div>
+        <div class="filter-row">
           <form method="GET" action="shop.php">
           <div class="filter-item">
             <select name="brands" class="filter-dropdown">
@@ -162,10 +162,8 @@
             </select>
           </div>
           
-          <div class="filter-line-border"></div>
-
           <div class="filter-submit-row">
-            <button type="submit" class="filter-submit">Filter</button>
+            <button type="submit" class="filter-submit">FILTER</button>
           </div>
           </form>
         </div>
