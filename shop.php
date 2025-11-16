@@ -99,46 +99,82 @@
 
         </div>
       </div>
+      <?php
+      require_once 'config.php';
+      $conn = getDBConnection($host, $user, $password, $database, $port);
+
+      $totalProducts = 0;
+      $displayStart = 1;
+      $displayedCount = 0;
+      $displayEnd = 0;
+
+      if ($conn) {
+          $cntRes = $conn->query("SELECT COUNT(*) AS cnt FROM products");
+          if ($cntRes) {
+              $totalProducts = (int)($cntRes->fetch_assoc()['cnt'] ?? 0);
+              $cntRes->free();
+          }
+
+          $sql = "SELECT product_id, product_name, price, image_url FROM products ORDER BY date_added DESC";
+          $result = $conn->query($sql);
+
+          if ($result && $result->num_rows > 0) {
+              $displayedCount = $result->num_rows;
+              $displayEnd = $displayStart + $displayedCount - 1;
+          }
+      }
+      ?>
+
       <div class="products-container">
-        <p> Item 1 - 9 of 4232 </p>
-        <div class="watch-grid">
-    <?php
-    
-    if ($conn) {
-        // Query to get the 4 most recent products
-        $sql = "SELECT product_id, product_name, price, image_url FROM products 
-                ORDER BY date_added DESC";
-        
-        $result = $conn->query($sql);
-        
-        if ($result && $result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
-                $product_name = htmlspecialchars($row["product_name"]);
-                $price = number_format($row["price"], 2);
-                $image_url = $row["image_url"] ? htmlspecialchars($row["image_url"]) : 'img/products/default-watch.jpg';
-                $product_id = (int)$row['product_id'];
-                
-                echo "
-                <div class='item-card' onclick=\"window.location.href='view-item.php?product_id={$product_id}';\">
-                  <div class='card-image'>
-                    <img src='{$image_url}' alt='{$product_name}'>
-                  </div>
-                  <div class='card-content'>
-                    <h3 class='product-name'>{$product_name}</h3>
-                    <p class='product-price'>₱{$price}</p>
-                    <button class='add-to-cart-btn'>Add to Cart</button>
-                  </div>
-                </div>";
+        <p>
+          <?php
+            if ($totalProducts === 0) {
+                echo "No items found.";
+            } else {
+                echo "Items {$displayStart} - " . max($displayStart, $displayEnd) . " of {$totalProducts}";
             }
-        } else {
-            echo "<p>No products found.</p>";
-        }
-        
-        $conn->close();
-    } else {
-        echo "<p>Unable to load products.</p>";
-    }
-    ?>
+          ?>
+        </p>
+              <div class="watch-grid">
+          <?php
+          require_once 'config.php';
+          $conn = getDBConnection($host, $user, $password, $database, $port);
+          
+          if ($conn) {
+              // Query to get the 4 most recent products
+              $sql = "SELECT product_id, product_name, price, image_url FROM products 
+                      ORDER BY date_added DESC";
+              
+              $result = $conn->query($sql);
+              
+              if ($result && $result->num_rows > 0) {
+                  while($row = $result->fetch_assoc()) {
+                      $product_name = htmlspecialchars($row["product_name"]);
+                      $price = number_format($row["price"], 2);
+                      $image_url = $row["image_url"] ? htmlspecialchars($row["image_url"]) : 'img/products/default-watch.jpg';
+                      $product_id = (int)$row['product_id'];
+                      
+                      echo "
+                      <div class='item-card' onclick=\"window.location.href='view-item.php?product_id={$product_id}';\">
+                        <div class='card-image'>
+                          <img src='{$image_url}' alt='{$product_name}'>
+                        </div>
+                        <div class='card-content'>
+                          <h3 class='product-name'>{$product_name}</h3>
+                          <p class='product-price'>₱{$price}</p>
+                          <button class='add-to-cart-btn'>Add to Cart</button>
+                        </div>
+                      </div>";
+                  }
+              } else {
+                  echo "<p>No products found.</p>";
+              }
+              
+              $conn->close();
+          } else {
+              echo "<p>Unable to load products.</p>";
+          }
+          ?>
           </div>
           </div>
 
