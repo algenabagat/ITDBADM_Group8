@@ -193,6 +193,41 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                     </div>
                 </section>
 
+                <!-- Categories Management -->
+                <section id="categories" class="content-section">
+                    <div class="section-header">
+                        <h2>Categories Management</h2>
+                        <button class="btn btn-primary" onclick="openModal('addCategory')">Add Category</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Category Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $categories_query = "SELECT * FROM categories ORDER BY category_id ASC";
+                                $categories_result = $conn->query($categories_query);
+                                while ($category = $categories_result->fetch_assoc()):
+                                ?>
+                                <tr>
+                                    <td><?php echo $category['category_id']; ?></td>
+                                    <td><?php echo htmlspecialchars($category['category_name']); ?></td>
+                                    <td class="actions">
+                                        <button class="btn btn-sm btn-edit" onclick="editCategory(<?php echo $category['category_id']; ?>)">Edit</button>
+                                        <button class="btn btn-sm btn-delete" onclick="deleteCategory(<?php echo $category['category_id']; ?>)">Delete</button>
+                                    </td>
+                                </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
                 <!-- Products Management -->
                 <section id="products" class="content-section">
                     <div class="section-header">
@@ -255,7 +290,6 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                                     <th>Product Name</th>
                                     <th>Current Stock</th>
                                     <th>Status</th>
-                                    <th>Last Updated</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -270,7 +304,6 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                                     <td><?php echo htmlspecialchars($item['product_name']); ?></td>
                                     <td><?php echo $item['stock']; ?></td>
                                     <td><span class="status-badge <?php echo $item['is_available'] == 'Yes' ? 'active' : 'inactive'; ?>"><?php echo $item['is_available']; ?></span></td>
-                                    <td><?php echo $item['date_added']; ?></td>
                                     <td class="actions">
                                         <button class="btn btn-sm btn-edit" onclick="editStock(<?php echo $item['product_id']; ?>)">Update</button>
                                     </td>
@@ -343,10 +376,144 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                         </table>
                     </div>
                 </section>
-                
-            </main>
-        </div>
-    </div>
+
+                <!-- Payments Management -->
+                <section id="payments" class="content-section">
+                    <div class="section-header">
+                        <h2>Payments</h2>
+                        <button class="btn btn-primary" onclick="openModal('addPayment')">Add Payment</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Payment ID</th>
+                                    <th>Order ID</th>
+                                    <th>Amount</th>
+                                    <th>Payment Method</th>
+                                    <th>Payment Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $payments_query = "SELECT p.*, pm.method_name FROM payments p LEFT JOIN payment_methods pm ON p.payment_method_id = pm.payment_method_id ORDER BY p.payment_date DESC";
+                                $payments_result = $conn->query($payments_query);
+                                while ($payment = $payments_result->fetch_assoc()):
+                                ?>
+                                <tr>
+                                    <td><?php echo $payment['payment_id']; ?></td>
+                                    <td><?php echo $payment['order_id'] ?? 'N/A'; ?></td>
+                                    <td>₱<?php echo number_format($payment['amount'], 2); ?></td>
+                                    <td><?php echo htmlspecialchars($payment['method_name'] ?? 'N/A'); ?></td>
+                                    <td><?php echo $payment['payment_date']; ?></td>
+                                    <td><span class="status-badge <?php echo strtolower(str_replace(' ', '', $payment['status'])); ?>"><?php echo $payment['status']; ?></span></td>
+                                    <td class="actions">
+                                        <button class="btn btn-sm btn-edit" onclick="editPayment(<?php echo $payment['payment_id']; ?>)">Edit</button>
+                                        <button class="btn btn-sm btn-delete" onclick="deletePayment(<?php echo $payment['payment_id']; ?>)">Delete</button>
+                                    </td>
+                                </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Add Payment Modal -->
+                <div id="addPaymentModal" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Payment</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <?php
+                                    $orders_for_pay = $conn->query("SELECT order_id FROM orders ORDER BY order_id DESC");
+                                    $payment_methods = $conn->query("SELECT payment_method_id, method_name FROM payment_methods ORDER BY payment_method_id ASC");
+                                ?>
+                                <div class="mb-3">
+                                    <label class="form-label">Order</label>
+                                    <select id="addPaymentOrder" class="form-select">
+                                        <option value="">-- Select Order --</option>
+                                        <?php while ($o = $orders_for_pay->fetch_assoc()): ?>
+                                            <option value="<?php echo $o['order_id']; ?>"><?php echo $o['order_id']; ?></option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Amount</label>
+                                    <input type="number" step="0.01" id="addPaymentAmount" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Payment Method</label>
+                                    <select id="addPaymentMethod" class="form-select">
+                                        <option value="">-- Select Method --</option>
+                                        <?php while ($m = $payment_methods->fetch_assoc()): ?>
+                                            <option value="<?php echo $m['payment_method_id']; ?>"><?php echo htmlspecialchars($m['method_name']); ?></option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <select id="addPaymentStatus" class="form-select">
+                                        <option value="Pending">Pending</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Failed">Failed</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="createPayment()">Create Payment</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Payment Modal -->
+                <div id="editPaymentModal" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Payment</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="editPaymentId">
+                                <div class="mb-3">
+                                    <label class="form-label">Amount</label>
+                                    <input type="number" step="0.01" id="editPaymentAmount" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Payment Method</label>
+                                    <select id="editPaymentMethod" class="form-select">
+                                        <option value="">-- Select Method --</option>
+                                        <?php
+                                            $payment_methods2 = $conn->query("SELECT payment_method_id, method_name FROM payment_methods ORDER BY payment_method_id ASC");
+                                            while ($m2 = $payment_methods2->fetch_assoc()):
+                                        ?>
+                                            <option value="<?php echo $m2['payment_method_id']; ?>"><?php echo htmlspecialchars($m2['method_name']); ?></option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <select id="editPaymentStatus" class="form-select">
+                                        <option value="Pending">Pending</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Failed">Failed</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="savePayment()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
     <!-- Add User Modal -->
     <div id="addUserModal" class="modal fade" tabindex="-1">
@@ -635,6 +802,51 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                     </div>
                 </div>
 
+    <!-- Add Category Modal -->
+    <div id="addCategoryModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Category Name</label>
+                        <input type="text" id="addCategoryName" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="createCategory()">Create Category</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Category Modal -->
+    <div id="editCategoryModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editCategoryId">
+                    <div class="mb-3">
+                        <label class="form-label">Category Name</label>
+                        <input type="text" id="editCategoryName" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveCategory()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Orders Modals -->
     <!-- View Order Modal -->
     <div id="viewOrderModal" class="modal fade" tabindex="-1">
@@ -830,6 +1042,10 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                 openAddOrderModal();
             } else if (modalType === 'addBrand') {
                 openAddBrandModal();
+            } else if (modalType === 'addCategory') {
+                openAddCategoryModal();
+            } else if (modalType === 'addPayment') {
+                openAddPaymentModal();
             } else {
                 console.log('Opening modal:', modalType);
             }
@@ -1321,6 +1537,100 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
             .catch(err => { console.error(err); alert('Error creating order'); });
         }
 
+        // ---- Payments Management (CRUD) ----
+        function openAddPaymentModal() {
+            document.getElementById('addPaymentOrder').value = '';
+            document.getElementById('addPaymentAmount').value = '';
+            document.getElementById('addPaymentMethod').value = '';
+            document.getElementById('addPaymentStatus').value = 'Pending';
+            const modal = new bootstrap.Modal(document.getElementById('addPaymentModal'));
+            modal.show();
+        }
+
+        function createPayment() {
+            const order_id = document.getElementById('addPaymentOrder').value;
+            const amount = parseFloat(document.getElementById('addPaymentAmount').value);
+            const payment_method_id = document.getElementById('addPaymentMethod').value;
+            const status = document.getElementById('addPaymentStatus').value;
+            if (!order_id || !amount || !payment_method_id) { alert('Order, amount and payment method are required'); return; }
+
+            fetch('create-payment.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ order_id: order_id, amount: amount, payment_method_id: payment_method_id, status: status })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Payment created (ID: ' + data.payment_id + ')');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addPaymentModal'));
+                    if (modal) modal.hide();
+                    location.reload();
+                } else {
+                    alert('Create failed: ' + (data.message || 'unknown'));
+                }
+            }).catch(err => { console.error(err); alert('Error creating payment'); });
+        }
+
+        function editPayment(paymentId) {
+            fetch('get-payment.php?payment_id=' + paymentId)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const p = data.payment;
+                        document.getElementById('editPaymentId').value = p.payment_id;
+                        document.getElementById('editPaymentAmount').value = p.amount;
+                        document.getElementById('editPaymentMethod').value = p.payment_method_id;
+                        document.getElementById('editPaymentStatus').value = p.status;
+                        const modal = new bootstrap.Modal(document.getElementById('editPaymentModal'));
+                        modal.show();
+                    } else {
+                        alert('Failed to load payment: ' + (data.message || 'unknown'));
+                    }
+                }).catch(err => { console.error(err); alert('Error loading payment'); });
+        }
+
+        function savePayment() {
+            const payment_id = document.getElementById('editPaymentId').value;
+            const amount = parseFloat(document.getElementById('editPaymentAmount').value);
+            const payment_method_id = document.getElementById('editPaymentMethod').value;
+            const status = document.getElementById('editPaymentStatus').value;
+            fetch('update-payment.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ payment_id: payment_id, amount: amount, payment_method_id: payment_method_id, status: status })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Payment updated');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editPaymentModal'));
+                    if (modal) modal.hide();
+                    location.reload();
+                } else {
+                    alert('Update failed: ' + (data.message || 'unknown'));
+                }
+            }).catch(err => { console.error(err); alert('Error updating payment'); });
+        }
+
+        function deletePayment(paymentId) {
+            if (!confirm('Delete this payment?')) return;
+            fetch('delete-payment.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ payment_id: paymentId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Payment deleted');
+                    location.reload();
+                } else {
+                    alert('Delete failed: ' + (data.message || 'unknown'));
+                }
+            }).catch(err => { console.error(err); alert('Error deleting payment'); });
+        }
+
         // ---- Brands Management ----
         function openAddBrandModal() {
             document.getElementById('addBrandName').value = '';
@@ -1413,6 +1723,96 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                 }
             })
             .catch(err => { console.error(err); alert('Error deleting brand'); });
+        }
+
+        // ---- Categories Management ----
+        function openAddCategoryModal() {
+            document.getElementById('addCategoryName').value = '';
+            const modal = new bootstrap.Modal(document.getElementById('addCategoryModal'));
+            modal.show();
+        }
+
+        function createCategory() {
+            const name = document.getElementById('addCategoryName').value.trim();
+            if (!name) { alert('Please enter a category name'); return; }
+
+            fetch('create-category.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category_name: name })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Category created');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addCategoryModal'));
+                    if (modal) modal.hide();
+                    location.reload();
+                } else {
+                    alert('Create failed: ' + (data.message || 'unknown'));
+                }
+            })
+            .catch(err => { console.error(err); alert('Error creating category'); });
+        }
+
+        function editCategory(categoryId) {
+            fetch('get-categories.php')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const c = (data.categories || []).find(x => parseInt(x.category_id) === parseInt(categoryId));
+                        if (!c) return alert('Category not found');
+                        document.getElementById('editCategoryId').value = c.category_id;
+                        document.getElementById('editCategoryName').value = c.category_name;
+                        const modal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
+                        modal.show();
+                    } else {
+                        alert('Failed to load categories');
+                    }
+                }).catch(err => { console.error(err); alert('Error loading categories'); });
+        }
+
+        function saveCategory() {
+            const id = document.getElementById('editCategoryId').value;
+            const name = document.getElementById('editCategoryName').value.trim();
+            if (!name) return alert('Please enter a category name');
+
+            fetch('update-category.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category_id: id, category_name: name })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Category updated');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editCategoryModal'));
+                    if (modal) modal.hide();
+                    location.reload();
+                } else {
+                    alert('Update failed: ' + (data.message || 'unknown'));
+                }
+            })
+            .catch(err => { console.error(err); alert('Error updating category'); });
+        }
+
+        function deleteCategory(categoryId) {
+            if (!confirm('Delete this category?')) return;
+            fetch('delete-category.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category_id: categoryId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Category deleted');
+                    location.reload();
+                } else {
+                    alert('Delete failed: ' + (data.message || 'unknown'));
+                }
+            })
+            .catch(err => { console.error(err); alert('Error deleting category'); });
         }
     </script>
 </body>
