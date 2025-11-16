@@ -245,7 +245,68 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                     </div>
                 </section>
 
-                <!-- Add more sections for Orders, Payments, Brands, Categories following the same pattern -->
+                <!-- Orders Management -->
+                <section id="orders" class="content-section">
+                    <div class="section-header">
+                            <h2>Orders</h2>
+                            <button class="btn btn-primary" onclick="openModal('addOrder')">Add Order</button>
+                        </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer Name</th>
+                                    <th>Branch</th>
+                                    <th>Order Date</th>
+                                    <th>Product Name</th>
+                                    <th>Quantity</th>
+                                    <th>Status</th>
+                                    <th>Total Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $orders_query = "
+                                    SELECT 
+                                        o.order_id,
+                                        CONCAT(u.first_name, ' ', u.last_name) as customer_name,
+                                        b.branch_name,
+                                        o.order_date,
+                                        p.product_name,
+                                        oi.quantity,
+                                        o.status,
+                                        o.total_amount
+                                    FROM orders o
+                                    JOIN users u ON o.user_id = u.user_id
+                                    LEFT JOIN branches b ON o.branch_id = b.branch_id
+                                    JOIN order_items oi ON o.order_id = oi.order_id
+                                    JOIN products p ON oi.product_id = p.product_id
+                                    ORDER BY o.order_date DESC
+                                ";
+                                $orders_result = $conn->query($orders_query);
+                                while ($order = $orders_result->fetch_assoc()):
+                                ?>
+                                <tr>
+                                    <td><?php echo $order['order_id']; ?></td>
+                                    <td><?php echo htmlspecialchars($order['customer_name']); ?></td>
+                                    <td><?php echo htmlspecialchars($order['branch_name'] ?? 'N/A'); ?></td>
+                                    <td><?php echo $order['order_date']; ?></td>
+                                    <td><?php echo htmlspecialchars($order['product_name']); ?></td>
+                                    <td><?php echo $order['quantity']; ?></td>
+                                    <td><span class=\"status-badge <?php echo strtolower(str_replace(' ', '', $order['status'])); ?>\"><?php echo $order['status']; ?></span></td>
+                                    <td>₱<?php echo number_format($order['total_amount'], 2); ?></td>
+                                    <td class="actions">
+                                        <button class="btn btn-sm btn-edit" onclick="editOrder(<?php echo $order['order_id']; ?>)">Edit</button>
+                                        <button class="btn btn-sm btn-delete" onclick="deleteOrder(<?php echo $order['order_id']; ?>)">Delete</button>
+                                    </td>
+                                </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
                 
             </main>
         </div>
@@ -485,8 +546,124 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
         </div>
     </div>
 
-    <!-- Modals would go here for Add/Edit functionality -->
-    
+    <!-- Orders Modals -->
+    <!-- View Order Modal -->
+    <div id="viewOrderModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="orderInfo">
+                        <p><strong>Order ID:</strong> <span id="viewOrderId"></span></p>
+                        <p><strong>Customer:</strong> <span id="viewOrderCustomer"></span></p>
+                        <p><strong>Branch:</strong> <span id="viewOrderBranch"></span></p>
+                        <p><strong>Order Date:</strong> <span id="viewOrderDate"></span></p>
+                        <p><strong>Status:</strong> <span id="viewOrderStatus"></span></p>
+                        <hr>
+                        <h6>Items</h6>
+                        <table class="table">
+                            <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr></thead>
+                            <tbody id="viewOrderItems"></tbody>
+                        </table>
+                        <p class="text-end"><strong>Total:</strong> ₱<span id="viewOrderTotal"></span></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Order Modal (status only) -->
+    <div id="editOrderModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editOrderId">
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select id="editOrderStatus" class="form-select">
+                            <option value="Pending">Pending</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveOrder()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Order Modal -->
+    <div id="addOrderModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <?php
+                        // load options for selects
+                        $all_users = $conn->query("SELECT user_id, first_name, last_name FROM users");
+                        $all_branches = $conn->query("SELECT branch_id, branch_name FROM branches");
+                        $all_products = $conn->query("SELECT product_id, product_name, price, stock FROM products WHERE stock > 0");
+                    ?>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Customer</label>
+                            <select id="createOrderUser" class="form-select">
+                                <?php while ($u = $all_users->fetch_assoc()): ?>
+                                    <option value="<?php echo $u['user_id']; ?>"><?php echo htmlspecialchars($u['first_name'] . ' ' . $u['last_name']); ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Branch</label>
+                            <select id="createOrderBranch" class="form-select">
+                                <option value="">-- Select Branch --</option>
+                                <?php while ($b = $all_branches->fetch_assoc()): ?>
+                                    <option value="<?php echo $b['branch_id']; ?>"><?php echo htmlspecialchars($b['branch_name']); ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="orderItemsContainer">
+                        <h6>Items</h6>
+                        <div class="order-item-row d-flex gap-2 mb-2">
+                            <select class="form-select item-product">
+                                <option value="">-- Select Product --</option>
+                                <?php while ($p = $all_products->fetch_assoc()): ?>
+                                    <option data-price="<?php echo $p['price']; ?>" value="<?php echo $p['product_id']; ?>"><?php echo htmlspecialchars($p['product_name'] . ' (₱' . number_format($p['price'],2) .')'); ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                            <input type="number" class="form-control item-qty" placeholder="Qty" min="1" value="1">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeItemRow(this)">Remove</button>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-sm btn-outline-primary" type="button" onclick="addItemRow()">Add Item</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="createOrder()">Create Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Load brands and categories on page load
@@ -560,6 +737,8 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                 openAddUserModal();
             } else if (modalType === 'addProduct') {
                 openAddProductModal();
+            } else if (modalType === 'addOrder') {
+                openAddOrderModal();
             } else {
                 console.log('Opening modal:', modalType);
             }
@@ -892,6 +1071,163 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                 console.error('Error:', error);
                 alert('Error updating stock');
             });
+        }
+
+        // ---- Orders Management ----
+        function viewOrder(orderId) {
+            fetch('get-order.php?order_id=' + orderId)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const o = data.order;
+                        document.getElementById('viewOrderId').innerText = o.order_id;
+                        document.getElementById('viewOrderCustomer').innerText = o.customer_name || (o.first_name + ' ' + o.last_name);
+                        document.getElementById('viewOrderBranch').innerText = o.branch_name || 'N/A';
+                        document.getElementById('viewOrderDate').innerText = o.order_date;
+                        document.getElementById('viewOrderStatus').innerText = o.status;
+                        const itemsTbody = document.getElementById('viewOrderItems');
+                        itemsTbody.innerHTML = '';
+                        let total = 0;
+                        (o.items || []).forEach(i => {
+                            const row = document.createElement('tr');
+                            const subtotal = (parseFloat(i.price) * parseInt(i.quantity)).toFixed(2);
+                            row.innerHTML = `<td>${i.product_name}</td><td>${i.quantity}</td><td>₱${parseFloat(i.price).toFixed(2)}</td><td>₱${subtotal}</td>`;
+                            itemsTbody.appendChild(row);
+                            total += parseFloat(subtotal);
+                        });
+                        document.getElementById('viewOrderTotal').innerText = total.toFixed(2);
+                        const modal = new bootstrap.Modal(document.getElementById('viewOrderModal'));
+                        modal.show();
+                    } else {
+                        alert('Failed to load order: ' + (data.message || 'unknown'));
+                    }
+                })
+                .catch(err => { console.error(err); alert('Error loading order'); });
+        }
+
+        function editOrder(orderId) {
+            fetch('get-order.php?order_id=' + orderId)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('editOrderId').value = data.order.order_id;
+                        document.getElementById('editOrderStatus').value = data.order.status;
+                        const modal = new bootstrap.Modal(document.getElementById('editOrderModal'));
+                        modal.show();
+                    } else {
+                        alert('Failed to load order for edit');
+                    }
+                }).catch(err => { console.error(err); alert('Error loading order'); });
+        }
+
+        function saveOrder() {
+            const orderId = document.getElementById('editOrderId').value;
+            const status = document.getElementById('editOrderStatus').value;
+            fetch('update-order.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ order_id: orderId, status: status })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Order updated');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editOrderModal'));
+                    if (modal) modal.hide();
+                    location.reload();
+                } else {
+                    alert('Update failed: ' + (data.message || 'unknown'));
+                }
+            })
+            .catch(err => { console.error(err); alert('Error updating order'); });
+        }
+
+        function deleteOrder(orderId) {
+            if (!confirm('Delete this order? This will restore product stock.')) return;
+            fetch('delete-order.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ order_id: orderId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Order deleted');
+                    location.reload();
+                } else {
+                    alert('Delete failed: ' + (data.message || 'unknown'));
+                }
+            })
+            .catch(err => { console.error(err); alert('Error deleting order'); });
+        }
+
+        function openAddOrderModal() {
+            // reset any existing item rows
+            const container = document.getElementById('orderItemsContainer');
+            if (!container) return alert('Create Order UI not available');
+            const firstRow = container.querySelector('.order-item-row');
+            // clear extras
+            container.querySelectorAll('.order-item-row').forEach((r, idx) => { if (idx>0) r.remove(); });
+            // reset first row values
+            const sel = firstRow.querySelector('.item-product');
+            const qty = firstRow.querySelector('.item-qty');
+            if (sel) sel.value = '';
+            if (qty) qty.value = 1;
+            const modal = new bootstrap.Modal(document.getElementById('addOrderModal'));
+            modal.show();
+        }
+
+        function addItemRow() {
+            const container = document.getElementById('orderItemsContainer');
+            const template = container.querySelector('.order-item-row');
+            const clone = template.cloneNode(true);
+            // clear values
+            clone.querySelector('.item-product').value = '';
+            clone.querySelector('.item-qty').value = 1;
+            container.appendChild(clone);
+        }
+
+        function removeItemRow(btn) {
+            const row = btn.closest('.order-item-row');
+            if (!row) return;
+            const container = document.getElementById('orderItemsContainer');
+            // do not remove last row
+            if (container.querySelectorAll('.order-item-row').length === 1) {
+                row.querySelector('.item-product').value = '';
+                row.querySelector('.item-qty').value = 1;
+                return;
+            }
+            row.remove();
+        }
+
+        function createOrder() {
+            const userId = document.getElementById('createOrderUser').value;
+            const branchId = document.getElementById('createOrderBranch').value || null;
+            const items = [];
+            document.querySelectorAll('#orderItemsContainer .order-item-row').forEach(r => {
+                const pid = r.querySelector('.item-product').value;
+                const qty = r.querySelector('.item-qty').value;
+                if (pid) items.push({ product_id: pid, quantity: qty });
+            });
+            if (items.length === 0) { alert('Add at least one item'); return; }
+
+            fetch('create-order.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId, branch_id: branchId, items: items })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Order created (ID: ' + data.order_id + ')');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addOrderModal'));
+                    if (modal) modal.hide();
+                    location.reload();
+                } else {
+                    alert('Create failed: ' + (data.message || 'unknown'));
+                }
+            })
+            .catch(err => { console.error(err); alert('Error creating order'); });
         }
     </script>
 </body>
