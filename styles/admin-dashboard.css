@@ -148,6 +148,7 @@
 
 .content-section.active {
     display: block;
+    width: 900px;
 }
 
 /* Section Header */
