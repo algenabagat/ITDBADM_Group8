@@ -82,6 +82,16 @@ try {
     }
     $itemStmt->close();
 
+    // 2B) Reduce product stock immediately after inserting order_items
+    $stockStmt = $conn->prepare("UPDATE products SET stock = stock - ? WHERE product_id = ?");
+    foreach ($cartItems as $item) {
+        $qty = (int)$item['quantity'];
+        $pid = (int)$item['product_id'];
+        $stockStmt->bind_param("ii", $qty, $pid);
+        $stockStmt->execute();
+    }
+    $stockStmt->close();
+
     // 3) Create payment record (fake, status Pending)
     // map payment_method string -> payment_method_id in payment_methods table
     $pmMap = [
@@ -112,14 +122,28 @@ try {
 
     // store last order info in session for summary page
     $_SESSION['last_order'] = [
-        'order_id' => $order_id,
-        'full_name' => $full_name,
-        'address'   => $address,
-        'phone'     => $phone,
-        'email'     => $email,
-        'payment_method' => $payment_method,
-        'total'     => $total,
-    ];
+    'order_id' => $order_id,
+    'full_name' => $full_name,
+    'address'   => $address,
+    'phone'     => $phone,
+    'email'     => $email,
+    'payment_method' => $payment_method,
+    'total'     => $total,
+
+    // 🔥 ADD THESE 4 FIELDS
+    'currency' => $_POST['currency'],
+    'rates' => [
+        'PHP' => 1,
+        'USD' => 0.018,
+        'EUR' => 0.0165
+    ],
+    'symbol' => ($_POST['currency'] === 'PHP' ? '₱' : ($_POST['currency'] === 'USD' ? '$' : '€')),
+    'converted_total' => $total * (
+        $_POST['currency'] === 'PHP' ? 1 :
+        ($_POST['currency'] === 'USD' ? 0.018 : 0.0165)
+    ),
+];
+
 
     $conn->close();
 

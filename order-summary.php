@@ -70,25 +70,46 @@ if ($conn) {
                 <th>Subtotal</th>
               </tr>
             </thead>
+            
             <tbody>
-            <?php $grand = 0; ?>
+            <?php
+            $grand = 0;
+
+            // currency session values from checkout
+            $currency = $last['currency'] ?? 'PHP';
+            $symbol   = $last['symbol'] ?? '₱';
+            $rate     = $last['rates'][$currency] ?? 1;
+            ?>
+
             <?php foreach ($orderItems as $item): 
                   $sub = $item['price'] * $item['quantity'];
                   $grand += $sub;
             ?>
+              
               <tr>
-                <td><?php echo htmlspecialchars($item['product_name']); ?></td>
-                <td><?php echo (int)$item['quantity']; ?></td>
-                <td>₱<?php echo number_format($item['price'], 2); ?></td>
-                <td>₱<?php echo number_format($sub, 2); ?></td>
+              <td><?php echo htmlspecialchars($item['product_name']); ?></td>
+              <td><?php echo (int)$item['quantity']; ?></td>
+
+              <!-- Converted price -->
+              <td>
+                  <?php echo $symbol . number_format($item['price'] * $rate, 2); ?>
+              </td>
+
+              <!-- Converted subtotal -->
+              <td>
+                  <?php echo $symbol . number_format(($item['price'] * $item['quantity']) * $rate, 2); ?>
+              </td>
               </tr>
+
+              <?php $grand += $item['price'] * $item['quantity']; ?>
+              
             <?php endforeach; ?>
             </tbody>
           </table>
         </div>
 
         <div class="d-flex justify-content-end">
-          <h4>Total: ₱<?php echo number_format($grand, 2); ?></h4>
+          <h4>Total: <?php echo $symbol . number_format($last['converted_total'], 2); ?></h4>
         </div>
 
         <a href="index.php" class="btn btn-dark mt-4">Back to Home</a>
