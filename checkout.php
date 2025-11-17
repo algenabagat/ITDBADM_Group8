@@ -97,52 +97,59 @@ $phone    = $userData['phone'] ?? '';
           </div>
 
           <!-- Payment method -->
-          <div class="card">
-            <div class="card-header">
-              <strong>Payment Method</strong>
-            </div>
-            <div class="card-body">
-              <div class="mb-3">
-                <label class="form-label">Select Payment Method</label>
-                <select name="payment_method" id="payment_method" class="form-select" required>
-                  <option value="">-- Select --</option>
-                  <option value="COD">Cash on Delivery</option>
-                  <option value="GCash">GCash</option>
-                  <option value="Card">Credit/Debit Card</option>
-                </select>
-              </div>
+          <div class="mb-3">
+    <label for="currencySelect" class="form-label">Currency</label>
+    <select name="currency" id="currencySelect" class="form-select" required>
+        <option value="">-- Select Currency --</option>
+        <option value="PHP" selected>PHP (₱)</option>
+        <option value="USD">USD ($)</option>
+        <option value="EUR">EUR (€)</option>
+    </select>
+      </div>
 
-              <!-- GCash fields -->
-              <div id="gcash_fields" style="display:none;">
-                <div class="mb-3">
-                  <label class="form-label">GCash Number</label>
-                  <input type="text" name="gcash_number" class="form-control">
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Account Name</label>
-                  <input type="text" name="gcash_name" class="form-control">
-                </div>
-              </div>
+      <div class="mb-3">
+          <label for="paymentMethod" class="form-label">Select Payment Method</label>
+          <select name="payment_method" id="paymentMethod" class="form-select" required>
+              <option value="">-- Select --</option>
 
-              <!-- Card fields -->
-              <div id="card_fields" style="display:none;">
-                <div class="mb-3">
-                  <label class="form-label">Card Number</label>
-                  <input type="text" name="card_number" class="form-control">
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Expiry (MM/YY)</label>
-                  <input type="text" name="card_expiry" class="form-control">
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">CVV</label>
-                  <input type="text" name="card_cvv" class="form-control">
-                </div>
-              </div>
-            </div>
+              <!-- ALWAYS SHOW -->
+              <option value="Card" data-allowed="all">Credit/Debit Card</option>
+
+              <!-- PHP ONLY -->
+              <option value="COD" data-allowed="php">Cash on Delivery</option>
+              <option value="GCash" data-allowed="php">GCash</option>
+              <option value="Cash" data-allowed="php">Cash (Pickup)</option>
+              <option value="PayPal" data-allowed="php">PayPal</option>
+          </select>
+      </div>
+
+      <!-- CARD INFO -->
+      <div id="card_fields" style="display:none;">
+          <div class="mb-3">
+              <label class="form-label">Card Number</label>
+              <input type="text" name="card_number" class="form-control">
           </div>
+          <div class="mb-3">
+              <label class="form-label">Expiry (MM/YY)</label>
+              <input type="text" name="card_expiry" class="form-control">
+          </div>
+          <div class="mb-3">
+              <label class="form-label">CVV</label>
+              <input type="text" name="card_cvv" class="form-control">
+          </div>
+      </div>
 
-        </div>
+      <!-- GCash INFO -->
+      <div id="gcash_fields" style="display:none;">
+          <div class="mb-3">
+              <label class="form-label">GCash Number</label>
+              <input type="text" name="gcash_number" class="form-control">
+          </div>
+          <div class="mb-3">
+              <label class="form-label">Account Name</label>
+              <input type="text" name="gcash_name" class="form-control">
+          </div>
+      </div>
 
         <!-- RIGHT: Order summary -->
         <div class="col-md-5">
@@ -181,13 +188,58 @@ $phone    = $userData['phone'] ?? '';
   const pmSelect = document.getElementById('payment_method');
   const gcashFields = document.getElementById('gcash_fields');
   const cardFields = document.getElementById('card_fields');
-
-  pmSelect.addEventListener('change', function () {
-    const val = this.value;
-    gcashFields.style.display = (val === 'GCash') ? 'block' : 'none';
-    cardFields.style.display = (val === 'Card') ? 'block' : 'none';
-  });
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const currencySelect = document.getElementById('currencySelect');
+    const paymentSelect  = document.getElementById('paymentMethod');
+    const gcashFields = document.getElementById('gcash_fields');
+    const cardFields  = document.getElementById('card_fields');
+
+    // Update payment options when currency changes
+    function updatePaymentOptions() {
+        const currency = currencySelect.value;
+        const options = paymentSelect.querySelectorAll('option');
+
+        options.forEach(opt => {
+            const allowed = opt.getAttribute('data-allowed');
+
+            if (opt.value === "") {
+                opt.hidden = false;
+                return;
+            }
+
+            if (currency === "PHP") {
+                opt.hidden = false;
+            } else {
+                opt.hidden = (allowed !== "all");
+            }
+        });
+
+        if (paymentSelect.selectedOptions.length > 0 &&
+            paymentSelect.selectedOptions[0].hidden) {
+            paymentSelect.value = "";
+        }
+
+        gcashFields.style.display = "none";
+        cardFields.style.display = "none";
+    }
+
+    // Show fields depending on payment method
+    paymentSelect.addEventListener('change', function () {
+        gcashFields.style.display = (this.value === "GCash") ? 'block' : 'none';
+        cardFields.style.display  = (this.value === "Card")  ? 'block' : 'none';
+    });
+
+    currencySelect.addEventListener('change', updatePaymentOptions);
+
+    updatePaymentOptions();
+});
+</script>
+
+
 </body>
 </html>
 <?php if ($conn) $conn->close(); ?>
