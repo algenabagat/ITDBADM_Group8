@@ -33,7 +33,7 @@ if ($stmt) {
     <a href="shop.php">Shop</a>
     <a href="index.php#new-arrivals">New Arrivals</a>
     <a href="about.php">About Us</a>
-    <a href="about.php">Brands</a>
+    <a href="about.php#brands-section">Brands</a>
   </div>
 
   <div class="icons">

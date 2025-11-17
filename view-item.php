@@ -12,9 +12,10 @@ if ($product_id <= 0) {
 
 // fetch product and brand
 $query = "SELECT p.product_id, p.product_name, p.description, p.price, p.image_url,
-                 b.brand_name, p.dial_color, p.dial_shape, p.strap_color, p.strap_material, p.style, p.stock
+                 b.brand_name, p.dial_color, p.dial_shape, p.strap_color, p.strap_material, p.stock, c.category_name
           FROM products p
           JOIN brands b ON p.brand_id = b.brand_id
+          JOIN categories c ON p.category_id = c.category_id
           WHERE p.product_id = ? LIMIT 1";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $product_id);
@@ -38,7 +39,7 @@ $dial_color     = htmlspecialchars($row['dial_color'] ?? 'N/A', ENT_QUOTES, 'UTF
 $dial_shape     = htmlspecialchars($row['dial_shape'] ?? 'N/A', ENT_QUOTES, 'UTF-8');
 $strap_color    = htmlspecialchars($row['strap_color'] ?? 'N/A', ENT_QUOTES, 'UTF-8');
 $strap_material = htmlspecialchars($row['strap_material'] ?? 'N/A', ENT_QUOTES, 'UTF-8');
-$style          = htmlspecialchars($row['style'] ?? 'N/A', ENT_QUOTES, 'UTF-8');
+$style          = htmlspecialchars($row['category_name'] ?? 'N/A', ENT_QUOTES, 'UTF-8');
 // stock may be integer; show "N/A" if missing
 $stock_display  = isset($row['stock']) && $row['stock'] !== null ? (int)$row['stock'] : 'N/A';
 

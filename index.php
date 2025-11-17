@@ -16,27 +16,93 @@
     <!-- Navbar Section -->
     <?php require 'header-navbar.php' ?>
         
-        <!-- Carousel Section -->
-        <div class="carousel-section">
-          <div id="watchCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-              <div class="carousel-item active">
-                <div class="carousel-content">
-                  <div class="carousel-image">
-                    <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Minimalist Chronograph Brown Eco Leather Watch">
-                  </div>
-                  <div class="carousel-text">
-                    <h2>Minimalist<br>Chronograph Brown Eco Leather Watch</h2>
-                    <p class="price">$349</p>
-                    <p class="description">Aenean urna nunc lorem feugiat magna consectetur ante montes. Sollicitudin neque rhoncus vehicula felis tempor porta quam.</p>
-                    <button class="add-to-cart-btn">Add to Cart</button>
-                  </div>
+<!-- Carousel Section -->
+<div class="carousel-section">
+  <div id="watchCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+    <!-- Carousel Indicators -->
+    <div class="carousel-indicators">
+      <?php
+      require_once 'config.php';
+      $conn = getDBConnection($host, $user, $password, $database, $port);
+      
+      if ($conn) {
+          $sql = "SELECT product_id FROM products ORDER BY date_added DESC LIMIT 5";
+          $result = $conn->query($sql);
+          
+          if ($result && $result->num_rows > 0) {
+              $index = 0;
+              while($row = $result->fetch_assoc()) {
+                  $active_class = $index === 0 ? 'active' : '';
+                  echo "<button type='button' data-bs-target='#watchCarousel' data-bs-slide-to='{$index}' class='{$active_class}' aria-label='Slide {$index}'></button>";
+                  $index++;
+              }
+          }
+          $conn->close();
+      }
+      ?>
+    </div>
+    
+    <div class="carousel-inner">
+      <?php
+      require_once 'config.php';
+      $conn = getDBConnection($host, $user, $password, $database, $port);
+      
+      if ($conn) {
+          $sql = "SELECT product_id, product_name, price, image_url, description 
+                  FROM products 
+                  ORDER BY date_added DESC 
+                  LIMIT 5";
+          
+          $result = $conn->query($sql);
+          
+          if ($result && $result->num_rows > 0) {
+              $is_first = true;
+              while($row = $result->fetch_assoc()) {
+                  $product_id   = (int)$row['product_id'];
+                  $product_name = htmlspecialchars($row["product_name"]);
+                  $price        = number_format($row["price"], 2);
+                  $image_url    = $row["image_url"] ? htmlspecialchars($row["image_url"]) : 'img/products/default-watch.jpg';
+                  $description  = htmlspecialchars($row["description"] ?? 'No description available.');
                   
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                  $active_class = $is_first ? 'active' : '';
+                  echo "
+                  <div class='carousel-item {$active_class}'>
+                    <div class='carousel-content' onclick=\"window.location.href='view-item.php?product_id={$product_id}';\">
+                      <div class='carousel-image'>
+                        <img src='{$image_url}' alt='{$product_name}'>
+                      </div>
+                      <div class='carousel-text'>
+                        <h2>{$product_name}</h2>
+                        <p class='price'>₱{$price}</p>
+                        <p class='description'>{$description}</p>
+                        <button class='add-to-cart-btn' onclick=\"event.stopPropagation();\">Add to Cart</button>
+                      </div>
+                    </div>
+                  </div>";
+                  $is_first = false;
+              }
+          } else {
+              echo "<div class='carousel-item active'><div class='carousel-content'><p>No products found for carousel.</p></div></div>";
+          }
+          
+          $conn->close();
+      } else {
+          echo "<div class='carousel-item active'><div class='carousel-content'><p>Unable to load carousel products.</p></div></div>";
+      }
+      ?>
+    </div>
+    
+    <!-- Carousel Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#watchCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#watchCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</div>
         
 <!-- New Arrivals Section -->
 <div id="new-arrivals" class="new-arrivals-section">
