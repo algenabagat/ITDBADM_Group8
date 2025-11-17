@@ -124,7 +124,7 @@ if ($conn) {
                                     <td>{$date}</td>
                                     <td>₱{$total}</td>
                                     <td><span class=\"status-badge {$statusClass}\">{$status}</span></td>
-                                    <td><a href=\"order-view.php?order_id={$oid}\" class=\"btn btn-sm btn-outline-primary\">View</a></td>
+                                    <td><a href=\"order-details.php?order_id={$oid}\" class=\"btn btn-sm btn-outline-primary\">View</a></td>
                                   </tr>";
                         }
                         echo '</tbody></table></div>';

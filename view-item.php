@@ -83,7 +83,13 @@ $basePrice = (float)$row['price']; // stored in PHP
         <img src="<?php echo $image_url; ?>" alt="<?php echo $product_name; ?>" class="img-fluid">
       </div>
 
-      <button class="add-to-cart-btn">Add to Cart</button>
+      <form action="add-to-cart.php" method="POST">
+      <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+      <input type="hidden" name="quantity" value="1">
+      <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+      </form>
+
+
     </div>
 
     <div class="item-details">
