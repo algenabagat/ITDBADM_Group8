@@ -18,7 +18,7 @@
       <section class="about-hero">
         <div class="hero-content">
           <h1 class="hero-title">Curating Timepieces That Define Moments</h1>
-          <p class="hero-subtitle">Your trusted destination for premium pre-owned and new watches</p>
+          <p class="hero-subtitle">Your trusted destination for premium pre-owned and new watches.</p>
         </div>
       </section>
 
@@ -69,10 +69,10 @@
         </div>
       </section>
 
-      <section class="brands-section">
+      <section id ="brands-section" class="brands-section">
         <div class="container">
           <h2 class="section-title">Featured Brands</h2>
-          <p class="brands-subtitle">We partner with renowned watchmakers to bring you exceptional timepieces</p>
+          <p class="brands-subtitle">We partner with renowned watchmakers to bring you exceptional timepieces.</p>
           <div class="row justify-content-center">
             <div class="col-6 col-md-4 col-lg-2 brand-item">
               <div class="brand-logo">

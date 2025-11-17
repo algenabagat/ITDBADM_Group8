@@ -244,7 +244,7 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                                     <th>Category</th>
                                     <th>Price</th>
                                     <th>Stock</th>
-                                    <th>Status</th>
+                                    <th>Available</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -289,7 +289,12 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                                     <th>Product ID</th>
                                     <th>Product Name</th>
                                     <th>Current Stock</th>
+<<<<<<< Updated upstream
                                     <th>Status</th>
+=======
+                                    <th>Available</th>
+                                    <th>Last Updated</th>
+>>>>>>> Stashed changes
                                     <th>Actions</th>
                                 </tr>
                             </thead>
