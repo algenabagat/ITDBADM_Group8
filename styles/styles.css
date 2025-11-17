@@ -765,3 +765,68 @@ html, body {
     -webkit-appearance: auto !important;
     appearance: auto !important;
 }
+
+/* Minimalist Branch Dropdown Styles */
+.branch-dropdown {
+    margin-right: 20px;
+}
+
+.branch-btn {
+    border: none;
+    background: transparent;
+    color: #333;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.branch-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.branch-icon {
+    font-size: 16px;
+}
+
+.dropdown-menu {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+}
+
+.branch-option {
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.branch-option:hover {
+    background: #f8f9fa;
+}
+
+.branch-indicator {
+    padding: 1rem 2rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 14px;
+    color: #666;
+}
+
+.results-count {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 2rem;
+}
+
+.no-products {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 3rem;
+}

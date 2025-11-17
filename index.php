@@ -28,8 +28,21 @@
       $conn = getDBConnection($host, $user, $password, $database, $port);
       
       if ($conn) {
-          $sql = "SELECT product_id FROM products ORDER BY date_added DESC LIMIT 5";
-          $result = $conn->query($sql);
+          // Get selected branch from session
+          $selectedBranchId = $_SESSION['selected_branch_id'] ?? 0;
+          
+          $sql = "SELECT product_id FROM products";
+          if ($selectedBranchId > 0) {
+              $sql .= " WHERE branch_id = ?";
+          }
+          $sql .= " ORDER BY date_added DESC LIMIT 5";
+          
+          $stmt = $conn->prepare($sql);
+          if ($selectedBranchId > 0) {
+              $stmt->bind_param('i', $selectedBranchId);
+          }
+          $stmt->execute();
+          $result = $stmt->get_result();
           
           if ($result && $result->num_rows > 0) {
               $index = 0;
@@ -50,12 +63,22 @@
       $conn = getDBConnection($host, $user, $password, $database, $port);
       
       if ($conn) {
-          $sql = "SELECT product_id, product_name, price, image_url, description 
-                  FROM products 
-                  ORDER BY date_added DESC 
-                  LIMIT 5";
+          // Get selected branch from session
+          $selectedBranchId = $_SESSION['selected_branch_id'] ?? 0;
           
-          $result = $conn->query($sql);
+          $sql = "SELECT product_id, product_name, price, image_url, description 
+                  FROM products";
+          if ($selectedBranchId > 0) {
+              $sql .= " WHERE branch_id = ?";
+          }
+          $sql .= " ORDER BY date_added DESC LIMIT 5";
+          
+          $stmt = $conn->prepare($sql);
+          if ($selectedBranchId > 0) {
+              $stmt->bind_param('i', $selectedBranchId);
+          }
+          $stmt->execute();
+          $result = $stmt->get_result();
           
           if ($result && $result->num_rows > 0) {
               $is_first = true;
@@ -92,7 +115,7 @@
                   $is_first = false;
               }
           } else {
-              echo "<div class='carousel-item active'><div class='carousel-content'><p>No products found for carousel.</p></div></div>";
+              echo "<div class='carousel-item active'><div class='carousel-content'><p>No products found for the selected branch.</p></div></div>";
           }
           
           $conn->close();
@@ -123,11 +146,21 @@
     $conn = getDBConnection($host, $user, $password, $database, $port);
     
     if ($conn) {
-        $sql = "SELECT product_id, product_name, price, image_url FROM products 
-                ORDER BY date_added DESC 
-                LIMIT 4";
+        // Get selected branch from session
+        $selectedBranchId = $_SESSION['selected_branch_id'] ?? 0;
         
-        $result = $conn->query($sql);
+        $sql = "SELECT product_id, product_name, price, image_url FROM products";
+        if ($selectedBranchId > 0) {
+            $sql .= " WHERE branch_id = ?";
+        }
+        $sql .= " ORDER BY date_added DESC LIMIT 4";
+        
+        $stmt = $conn->prepare($sql);
+        if ($selectedBranchId > 0) {
+            $stmt->bind_param('i', $selectedBranchId);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
         
         if ($result && $result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
@@ -157,7 +190,7 @@
                 </div>";
             }
         } else {
-            echo "<p>No products found.</p>";
+            echo "<p>No products found for the selected branch.</p>";
         }
         
         $conn->close();

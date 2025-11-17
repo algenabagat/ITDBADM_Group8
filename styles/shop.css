@@ -36,14 +36,96 @@
     color: #767575;
 }
 
-
 .watch-grid {
     display: flex;
     flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: space-between;
+    gap: 30px; /* Consistent gap between cards */
 }
 
 .item-card {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
+    flex: 0 0 calc(25% - 30px); /* 4 cards per row with consistent spacing */
+    box-sizing: border-box;
+}
+
+/* Clear All button styles */
+.filter-submit-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.filter-submit {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.filter-submit:hover {
+    background-color: #555;
+}
+
+.filter-clear {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 15px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.filter-clear:hover {
+    color: #333;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .item-card {
+        flex: 0 0 calc(33.333% - 30px); /* 3 cards per row on smaller screens */
+    }
+}
+
+@media (max-width: 992px) {
+    .item-card {
+        flex: 0 0 calc(50% - 30px); /* 2 cards per row on tablets */
+    }
+    
+    .shop-container {
+        padding: 30px 50px;
+        flex-direction: column;
+    }
+    
+    .products-container {
+        margin-left: 0;
+        margin-top: 30px;
+    }
+    
+    .filter-bar {
+        width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .item-card {
+        flex: 0 0 100%; /* 1 card per row on mobile */
+    }
+    
+    .shop-container {
+        padding: 20px;
+    }
+    
+    .watch-grid {
+        gap: 20px;
+    }
 }
