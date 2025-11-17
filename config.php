@@ -2,7 +2,7 @@
 /* Change my_username/my_password of ur database here */
 $host = "localhost";
 $user = "root";
-$password = "DLSU1234!";
+$password = "";
 $database = "watch_db";
 $port = 3306;
 
