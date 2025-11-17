@@ -164,9 +164,10 @@ $phone    = $userData['phone'] ?? '';
                     <strong><?php echo htmlspecialchars($item['product_name']); ?></strong><br>
                     <small>Qty: <?php echo (int)$item['quantity']; ?></small>
                   </div>
-                  <div>
-                    ₱<?php echo number_format($item['subtotal'], 2); ?>
+                  <div class="item-price" data-php="<?php echo $item['subtotal']; ?>">
+                  ₱<?php echo number_format($item['subtotal'], 2); ?>
                   </div>
+
                 </div>
               <?php endforeach; ?>
               <hr>
@@ -196,15 +197,14 @@ paymentMethod.addEventListener('change', function () {
     cardFields.style.display  = (this.value === "Card")  ? 'block' : 'none';
 });
 
-// Currency change logic
+// Currency change logic (PHP = all methods, USD/EUR = card only)
 currency.addEventListener('change', function () {
     const curr = this.value;
 
-    // Reset hidden attributes
+    // Reset hidden
     [...paymentMethod.options].forEach(opt => opt.hidden = false);
 
     if (curr === "USD" || curr === "EUR") {
-        // USD/EUR → CARD ONLY
         [...paymentMethod.options].forEach(opt => {
             if (opt.value !== "" && opt.value !== "Card") {
                 opt.hidden = true;
@@ -215,43 +215,65 @@ currency.addEventListener('change', function () {
         gcashFields.style.display = "none";
         cardFields.style.display = "block";
     } else {
-        // PHP → allow all
         paymentMethod.value = "";
         gcashFields.style.display = "none";
         cardFields.style.display = "none";
     }
+
+    // ALSO RUN PRICE CONVERSION
+    updatePrices();
 });
 </script>
 
 <script>
+// ============================
+// PRICE CONVERSION (PER ITEM + TOTAL)
+// ============================
+
+// Per-item price elements
+const itemPrices = document.querySelectorAll('.item-price'); 
+// Total
 const totalDisplay = document.getElementById('total_display');
+// PHP base total
 const phpTotal = <?php echo $total; ?>;
 
+// Conversion rates
 const rates = {
     "PHP": 1,
-    "USD": 0.018,     // ₱1 = $0.018 
-    "EUR": 0.0165     // ₱1 = €0.0165 
+    "USD": 0.018,
+    "EUR": 0.0165
 };
 
-
-function updateTotal() {
+function updatePrices() {
     const curr = currency.value;
-    const converted = phpTotal * rates[curr];
+    const rate = rates[curr];
 
     const symbol =
         curr === "PHP" ? "₱" :
-        curr === "USD" ? "$"  :
+        curr === "USD" ? "$" :
         "€";
 
+    // PER ITEM
+    itemPrices.forEach(el => {
+        let phpValue = parseFloat(el.dataset.php);
+        let converted = phpValue * rate;
+
+        el.innerHTML =
+            symbol + converted.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    });
+
+    // TOTAL
+    const totalConverted = phpTotal * rate;
+
     totalDisplay.innerHTML =
-        symbol + converted.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        symbol + totalConverted.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+    // SEND TO BACKEND
+    document.getElementById("final_currency").value = curr;
 }
 
-// Call conversion whenever currency changes
-currency.addEventListener('change', updateTotal);
-
-// Run once on page load
-updateTotal();
+// Trigger on page load
+updatePrices();
 </script>
 
 
