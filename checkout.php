@@ -66,7 +66,7 @@ $phone    = $userData['phone'] ?? '';
     <h2 class="mb-4">Checkout</h2>
 
     <form action="checkout-process.php" method="post">
-      <div class="row g-4">
+      <div class="row g-4 align-items-start">
         <!-- LEFT: Customer info -->
         <div class="col-md-7">
           <div class="card mb-3">
@@ -94,16 +94,16 @@ $phone    = $userData['phone'] ?? '';
                        value="<?php echo htmlspecialchars($email); ?>" required>
               </div>
             </div>
-          </div>
+          </div> 
 
           <!-- Payment method -->
+
           <div class="mb-3">
-    <label for="currencySelect" class="form-label">Currency</label>
-    <select name="currency" id="currencySelect" class="form-select" required>
-        <option value="">-- Select Currency --</option>
-        <option value="PHP" selected>PHP (₱)</option>
-        <option value="USD">USD ($)</option>
-        <option value="EUR">EUR (€)</option>
+          <label class="form-label">Currency</label>
+          <select name="currency" id="currency" class="form-select" required>
+              <option value="PHP" selected>PHP (₱)</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
     </select>
       </div>
 
@@ -113,13 +113,11 @@ $phone    = $userData['phone'] ?? '';
               <option value="">-- Select --</option>
 
               <!-- ALWAYS SHOW -->
-              <option value="Card" data-allowed="all">Credit/Debit Card</option>
+              <option value="Card" data-allowed="all">Credit Card</option>
 
               <!-- PHP ONLY -->
               <option value="COD" data-allowed="php">Cash on Delivery</option>
               <option value="GCash" data-allowed="php">GCash</option>
-              <option value="Cash" data-allowed="php">Cash (Pickup)</option>
-              <option value="PayPal" data-allowed="php">PayPal</option>
           </select>
       </div>
 
@@ -151,6 +149,8 @@ $phone    = $userData['phone'] ?? '';
           </div>
       </div>
 
+</div>
+
         <!-- RIGHT: Order summary -->
         <div class="col-md-5">
           <div class="card">
@@ -172,7 +172,7 @@ $phone    = $userData['phone'] ?? '';
               <hr>
               <div class="d-flex justify-content-between">
                 <span>Total:</span>
-                <strong>₱<?php echo number_format($total, 2); ?></strong>
+                <strong id="total_display">₱<?php echo number_format($total, 2); ?></strong>
               </div>
               <input type="hidden" name="confirm_total" value="<?php echo $total; ?>">
               <button type="submit" class="btn btn-dark w-100 mt-4">Place Order</button>
@@ -185,59 +185,75 @@ $phone    = $userData['phone'] ?? '';
 </div>
 
 <script>
-  const pmSelect = document.getElementById('payment_method');
-  const gcashFields = document.getElementById('gcash_fields');
-  const cardFields = document.getElementById('card_fields');
-</script>
+const currency = document.getElementById('currency');
+const paymentMethod = document.getElementById('paymentMethod');
+const gcashFields = document.getElementById('gcash_fields');
+const cardFields = document.getElementById('card_fields');
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+// Show/Hide extra fields when payment method changes
+paymentMethod.addEventListener('change', function () {
+    gcashFields.style.display = (this.value === "GCash") ? 'block' : 'none';
+    cardFields.style.display  = (this.value === "Card")  ? 'block' : 'none';
+});
 
-    const currencySelect = document.getElementById('currencySelect');
-    const paymentSelect  = document.getElementById('paymentMethod');
-    const gcashFields = document.getElementById('gcash_fields');
-    const cardFields  = document.getElementById('card_fields');
+// Currency change logic
+currency.addEventListener('change', function () {
+    const curr = this.value;
 
-    // Update payment options when currency changes
-    function updatePaymentOptions() {
-        const currency = currencySelect.value;
-        const options = paymentSelect.querySelectorAll('option');
+    // Reset hidden attributes
+    [...paymentMethod.options].forEach(opt => opt.hidden = false);
 
-        options.forEach(opt => {
-            const allowed = opt.getAttribute('data-allowed');
-
-            if (opt.value === "") {
-                opt.hidden = false;
-                return;
-            }
-
-            if (currency === "PHP") {
-                opt.hidden = false;
-            } else {
-                opt.hidden = (allowed !== "all");
+    if (curr === "USD" || curr === "EUR") {
+        // USD/EUR → CARD ONLY
+        [...paymentMethod.options].forEach(opt => {
+            if (opt.value !== "" && opt.value !== "Card") {
+                opt.hidden = true;
             }
         });
 
-        if (paymentSelect.selectedOptions.length > 0 &&
-            paymentSelect.selectedOptions[0].hidden) {
-            paymentSelect.value = "";
-        }
-
+        paymentMethod.value = "Card";
+        gcashFields.style.display = "none";
+        cardFields.style.display = "block";
+    } else {
+        // PHP → allow all
+        paymentMethod.value = "";
         gcashFields.style.display = "none";
         cardFields.style.display = "none";
     }
-
-    // Show fields depending on payment method
-    paymentSelect.addEventListener('change', function () {
-        gcashFields.style.display = (this.value === "GCash") ? 'block' : 'none';
-        cardFields.style.display  = (this.value === "Card")  ? 'block' : 'none';
-    });
-
-    currencySelect.addEventListener('change', updatePaymentOptions);
-
-    updatePaymentOptions();
 });
 </script>
+
+<script>
+const totalDisplay = document.getElementById('total_display');
+const phpTotal = <?php echo $total; ?>;
+
+const rates = {
+    "PHP": 1,
+    "USD": 0.018,     // ₱1 = $0.018 
+    "EUR": 0.0165     // ₱1 = €0.0165 
+};
+
+
+function updateTotal() {
+    const curr = currency.value;
+    const converted = phpTotal * rates[curr];
+
+    const symbol =
+        curr === "PHP" ? "₱" :
+        curr === "USD" ? "$"  :
+        "€";
+
+    totalDisplay.innerHTML =
+        symbol + converted.toLocaleString(undefined, { minimumFractionDigits: 2 });
+}
+
+// Call conversion whenever currency changes
+currency.addEventListener('change', updateTotal);
+
+// Run once on page load
+updateTotal();
+</script>
+
 
 
 </body>
