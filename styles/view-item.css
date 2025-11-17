@@ -38,14 +38,28 @@
     display: block;
 }
 
-/* keep the button below the image */
 .left-section .add-to-cart-btn {
-    align-self: center;
-    width: 70%;
-
+    width: 380px;           
+    max-width: 90%;
+    display: block;
+    margin: 12px auto 0;    
+    padding: 12px 16px;
+    font-size: 15px;
+    border-radius: 6px;
+    background-color: #322C2C;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 6px 12px rgba(50,44,44,0.08);
+    transition: transform .12s ease, box-shadow .12s ease;
 }
 
-/* adjust details column to match remaining width */
+.left-section .add-to-cart-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(50,44,44,0.12);
+}
+
 .item-details {
     display: flex;
     flex-direction: column;
@@ -70,7 +84,6 @@
     font-size: 18px;
 }
 
-/* Currency selector styles */
 .currency-selector {
     margin: 8px 0 14px;
     position: relative;
@@ -124,7 +137,6 @@
     background: #f6f6f8;
 }
 
-/* ensure price is prominent */
 .item-price {
     font-size: 28px;
     font-weight: 800;

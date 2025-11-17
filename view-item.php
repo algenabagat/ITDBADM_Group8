@@ -72,6 +72,7 @@ $basePrice = (float)$row['price']; // stored in PHP
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="styles/styles.css">
 <link rel="stylesheet" href="styles/view-item.css">
+<link rel="icon" type="image/x-icon" href="img/icon.png">
 </head>
 <body>
 <?php include 'header-navbar.php'; ?>

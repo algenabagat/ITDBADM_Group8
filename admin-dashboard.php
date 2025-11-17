@@ -41,6 +41,7 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="styles/admin-dashboard.css">
+    <link rel="icon" type="image/x-icon" href="img/icon.png">
 </head>
 <body>
     <div class="container-fluid admin-dashboard">
@@ -289,12 +290,8 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                                     <th>Product ID</th>
                                     <th>Product Name</th>
                                     <th>Current Stock</th>
-<<<<<<< Updated upstream
-                                    <th>Status</th>
-=======
                                     <th>Available</th>
                                     <th>Last Updated</th>
->>>>>>> Stashed changes
                                     <th>Actions</th>
                                 </tr>
                             </thead>

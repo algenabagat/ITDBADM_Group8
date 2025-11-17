@@ -37,6 +37,7 @@ if ($conn) {
   <title>Zeit - Cart</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles/styles.css">
+  <link rel="icon" type="image/x-icon" href="img/icon.png">
 </head>
 <body>
 <div class="container-fluid">
