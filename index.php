@@ -75,7 +75,15 @@
                         <h2>{$product_name}</h2>
                         <p class='price'>₱{$price}</p>
                         <p class='description'>{$description}</p>
-                        <button class='add-to-cart-btn' onclick=\"event.stopPropagation();\">Add to Cart</button>
+                        
+                        <form action='add-to-cart.php' method='POST' onsubmit='event.stopPropagation();'>
+                        <input type='hidden' name='product_id' value='{$product_id}'>
+                        <input type='hidden' name='quantity' value='1'>
+                        <button type='submit' class='add-to-cart-btn'>
+                          Add to Cart
+                        </button>
+                        </form>
+
                       </div>
                     </div>
                   </div>";
@@ -134,8 +142,16 @@
                   <div class='card-content'>
                     <h3 class='product-name'>{$product_name}</h3>
                     <p class='product-price'>₱{$price}</p>
-                    <button class='add-to-cart-btn'>Add to Cart</button>
-                  </div>
+
+                    <form action='add-to-cart.php' method='POST' onsubmit='event.stopPropagation();'>
+                      <input type='hidden' name='product_id' value='{$product_id}'>
+                      <input type='hidden' name='quantity' value='1'>
+                      <button type='submit' class='add-to-cart-btn'>
+                        Add to Cart
+                      </button>
+                    </form>
+
+                    </div>
                 </div>";
             }
         } else {
