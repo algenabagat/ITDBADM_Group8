@@ -109,6 +109,12 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                             Categories
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="#branches" class="nav-link" data-target="branches">
+                            <span class="nav-icon">🏠</span>
+                            Branches
+                        </a>
+                    </li>
                     <?php endif; ?>
                 </ul>
             </nav>
@@ -221,6 +227,41 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                                     <td class="actions">
                                         <button class="btn btn-sm btn-edit" onclick="editCategory(<?php echo $category['category_id']; ?>)">Edit</button>
                                         <button class="btn btn-sm btn-delete" onclick="deleteCategory(<?php echo $category['category_id']; ?>)">Delete</button>
+                                    </td>
+                                </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Branches Management -->
+                <section id="branches" class="content-section">
+                    <div class="section-header">
+                        <h2>Branches Management</h2>
+                        <button class="btn btn-primary" onclick="openModal('addBranch')">Add Branch</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Branch Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $branches_query = "SELECT * FROM branches ORDER BY branch_id ASC";
+                                $branches_result = $conn->query($branches_query);
+                                while ($branch = $branches_result->fetch_assoc()):
+                                ?>
+                                <tr>
+                                    <td><?php echo $branch['branch_id']; ?></td>
+                                    <td><?php echo htmlspecialchars($branch['branch_name']); ?></td>
+                                    <td class="actions">
+                                        <button class="btn btn-sm btn-edit" onclick="editBranch(<?php echo $branch['branch_id']; ?>)">Edit</button>
+                                        <button class="btn btn-sm btn-delete" onclick="deleteBranch(<?php echo $branch['branch_id']; ?>)">Delete</button>
                                     </td>
                                 </tr>
                                 <?php endwhile; ?>
@@ -804,6 +845,59 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                     </div>
                 </div>
 
+                <!-- Add Branch Modal -->
+                <div id="addBranchModal" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Branch</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Branch Name</label>
+                                    <input type="text" id="addBranchName" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" id="addBranchLocation" class="form-control">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="createBranch()">Create Branch</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Branch Modal -->
+                <div id="editBranchModal" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Branch</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="editBranchId">
+                                <div class="mb-3">
+                                    <label class="form-label">Branch Name</label>
+                                    <input type="text" id="editBranchName" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" id="editBranchLocation" class="form-control">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="saveBranch()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
     <!-- Add Category Modal -->
     <div id="addCategoryModal" class="modal fade" tabindex="-1">
         <div class="modal-dialog">
@@ -1044,6 +1138,8 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                 openAddOrderModal();
             } else if (modalType === 'addBrand') {
                 openAddBrandModal();
+            } else if (modalType === 'addBranch') {
+                openAddBranchModal();
             } else if (modalType === 'addCategory') {
                 openAddCategoryModal();
             } else if (modalType === 'addPayment') {
@@ -1725,6 +1821,96 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                 }
             })
             .catch(err => { console.error(err); alert('Error deleting brand'); });
+        }
+
+        // ---- Branches Management ----
+        function openAddBranchModal() {
+            document.getElementById('addBranchName').value = '';
+            document.getElementById('addBranchLocation').value = '';
+            const modal = new bootstrap.Modal(document.getElementById('addBranchModal'));
+            modal.show();
+        }
+
+        function createBranch() {
+            const name = document.getElementById('addBranchName').value.trim();
+            const location = document.getElementById('addBranchLocation').value.trim();
+            if (!name) { alert('Please enter branch name'); return; }
+
+            fetch('create-branch.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ branch_name: name, location: location })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Branch created');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addBranchModal'));
+                    if (modal) modal.hide();
+                    location.reload();
+                } else {
+                    alert('Create failed: ' + (data.message || 'unknown'));
+                }
+            }).catch(err => { console.error(err); alert('Error creating branch'); });
+        }
+
+        function editBranch(branchId) {
+            fetch('get-branch.php?branch_id=' + branchId)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const b = data.branch;
+                        document.getElementById('editBranchId').value = b.branch_id;
+                        document.getElementById('editBranchName').value = b.branch_name;
+                        document.getElementById('editBranchLocation').value = b.location || '';
+                        const modal = new bootstrap.Modal(document.getElementById('editBranchModal'));
+                        modal.show();
+                    } else {
+                        alert('Failed to load branch');
+                    }
+                }).catch(err => { console.error(err); alert('Error loading branch'); });
+        }
+
+        function saveBranch() {
+            const id = document.getElementById('editBranchId').value;
+            const name = document.getElementById('editBranchName').value.trim();
+            const location = document.getElementById('editBranchLocation').value.trim();
+            if (!name) return alert('Please enter branch name');
+
+            fetch('update-branch.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ branch_id: id, branch_name: name, location: location })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Branch updated');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editBranchModal'));
+                    if (modal) modal.hide();
+                    location.reload();
+                } else {
+                    alert('Update failed: ' + (data.message || 'unknown'));
+                }
+            }).catch(err => { console.error(err); alert('Error updating branch'); });
+        }
+
+        function deleteBranch(branchId) {
+            if (!confirm('Delete this branch?')) return;
+            fetch('delete-branch.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ branch_id: branchId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Branch deleted');
+                    location.reload();
+                } else {
+                    alert('Delete failed: ' + (data.message || 'unknown'));
+                }
+            }).catch(err => { console.error(err); alert('Error deleting branch'); });
         }
 
         // ---- Categories Management ----
