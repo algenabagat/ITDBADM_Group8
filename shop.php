@@ -5,7 +5,6 @@ $conn = getDBConnection($host, $user, $password, $database, $port);
 
 $selectedBranch = isset($_SESSION['branch_id']) ? (int)$_SESSION['branch_id'] : null;
 
-// detect whether any GET filters/search are present
 $haveFilters = !empty($_GET['brands']) || !empty($_GET['categories']) || !empty($_GET['gender'])
     || !empty($_GET['price']) || !empty($_GET['dial_color']) || !empty($_GET['dial_shape'])
     || !empty($_GET['dial_type']) || !empty($_GET['strap_color']) || !empty($_GET['strap_material'])
@@ -50,7 +49,7 @@ if ($conn) {
         }
 
     } else {
-        // Filters are present — call SearchProducts(search_term, category_id, brand_id, min_price, max_price)
+        // call SearchProducts(search_term, category_id, brand_id, min_price, max_price)
         $search    = !empty($_GET['q']) ? $_GET['q'] : null;
         $category  = !empty($_GET['category_id']) ? (int)$_GET['category_id'] : null;
         $brand     = !empty($_GET['brand_id']) ? (int)$_GET['brand_id'] : null;
@@ -59,8 +58,6 @@ if ($conn) {
 
         $stmt = $conn->prepare("CALL SearchProducts(?, ?, ?, ?, ?)");
         if ($stmt) {
-            // correct type string: 'siidd' => s, i, i, d, d
-            // bind variables (can be null)
             $stmt->bind_param('siidd', $search, $category, $brand, $minPrice, $maxPrice);
             $stmt->execute();
 
@@ -71,7 +68,6 @@ if ($conn) {
                     $res->free();
                 }
             } else {
-                // fallback: fetch via bind_result (adjust columns to SP SELECT)
                 $stmt->bind_result($pid, $pname, $brandn, $catn, $price, $stock, $img);
                 while ($stmt->fetch()) {
                     $products[] = [
@@ -93,8 +89,6 @@ if ($conn) {
         }
     }
 }
-
-// now $products contains rows to render
 ?>
 
 <!doctype html>

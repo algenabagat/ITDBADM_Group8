@@ -24,11 +24,10 @@ $row = $res ? $res->fetch_assoc() : null;
 $ok = !empty($row['success']);
 $msg = $row['message'] ?? '';
 
-// redirect back with basic feedback (adapt to your UI)
+// redirect back with basic feedback 
 if ($ok) {
     header('Location: cart.php');
 } else {
-    // optionally pass message via GET or session flash
     $_SESSION['flash_error'] = $msg;
     header('Location: view-item.php?product_id=' . $product_id);
 }

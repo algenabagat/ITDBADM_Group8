@@ -112,7 +112,6 @@ $phone    = $userData['phone'] ?? '';
           <select name="payment_method" id="paymentMethod" class="form-select" required>
               <option value="">-- Select --</option>
 
-              <!-- ALWAYS SHOW -->
               <option value="Card" data-allowed="all">Credit Card</option>
 
               <!-- PHP ONLY -->
@@ -226,11 +225,6 @@ currency.addEventListener('change', function () {
 </script>
 
 <script>
-// ============================
-// PRICE CONVERSION (PER ITEM + TOTAL)
-// ============================
-
-// Per-item price elements
 const itemPrices = document.querySelectorAll('.item-price'); 
 // Total
 const totalDisplay = document.getElementById('total_display');

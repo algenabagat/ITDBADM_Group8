@@ -41,7 +41,6 @@ if ($stock < 0) {
 }
 
 // Calculate quantity change (difference between new stock and current stock)
-// First get current stock to calculate the change
 $current_stock_query = "SELECT stock FROM products WHERE product_id = ?";
 $stmt = $conn->prepare($current_stock_query);
 $stmt->bind_param("i", $product_id);

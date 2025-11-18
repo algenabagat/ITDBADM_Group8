@@ -29,7 +29,6 @@ if (!$row) {
     exit;
 }
 
-// normalize fields and provide safe defaults to avoid "undefined index" warnings
 $product_name = htmlspecialchars($row['product_name'] ?? 'Untitled', ENT_QUOTES, 'UTF-8');
 $image_url = htmlspecialchars($row['image_url'] ?: 'img/products/default-watch.jpg', ENT_QUOTES, 'UTF-8');
 $description = nl2br(htmlspecialchars($row['description'] ?? 'No description available.', ENT_QUOTES, 'UTF-8'));
@@ -40,7 +39,6 @@ $dial_shape     = htmlspecialchars($row['dial_shape'] ?? 'N/A', ENT_QUOTES, 'UTF
 $strap_color    = htmlspecialchars($row['strap_color'] ?? 'N/A', ENT_QUOTES, 'UTF-8');
 $strap_material = htmlspecialchars($row['strap_material'] ?? 'N/A', ENT_QUOTES, 'UTF-8');
 $style          = htmlspecialchars($row['category_name'] ?? 'N/A', ENT_QUOTES, 'UTF-8');
-// stock may be integer; show "N/A" if missing
 $stock_display  = isset($row['stock']) && $row['stock'] !== null ? (int)$row['stock'] : 'N/A';
 
 // fetch currencies

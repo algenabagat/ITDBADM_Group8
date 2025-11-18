@@ -38,7 +38,7 @@ if ($user_id === $requester) {
     exit();
 }
 
-// Delete user (hard delete). If you prefer soft-delete, update a flag instead.
+// Delete user (hard delete)
 $del = "DELETE FROM users WHERE user_id = ?";
 $st = $conn->prepare($del);
 $st->bind_param("i", $user_id);

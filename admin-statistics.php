@@ -65,7 +65,7 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
             </div>
         </header>
 
-        <!-- Main Content (No Sidebar for Stats) -->
+        <!-- Main Content -->
         <div class="admin-content" style="padding-left: 0;">
             <!-- Sidebar for Stats -->
             <nav class="admin-sidebar">
@@ -181,7 +181,7 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                     </div>
 
                     <?php
-                    // 1. Get ALL branches that have a record in the revenue table
+                    // Get ALL branches that have a record in the revenue table
                     $branchesQuery = $conn->query("
                         SELECT DISTINCT b.branch_id, b.branch_name 
                         FROM branches b 
@@ -195,12 +195,12 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                         $branches[] = $branch;
                     }
                     
-                    // 2. Set default branch (the first one in the list, if available)
+                    // Set default branch (the first one in the list, if available)
                     $defaultBranchId = $branches[0]['branch_id'] ?? null;
                     $defaultBranchName = $branches[0]['branch_name'] ?? 'N/A';
                     $defaultBranchRevenue = 0;
 
-                    // 3. Get the initial revenue for the default branch
+                    // Get the initial revenue for the default branch
                     if ($defaultBranchId !== null) {
                         $br = $conn->query("
                             SELECT total_revenue AS s 
@@ -668,7 +668,6 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
             const branchId = select.value;
             const selectedBranchName = select.options[select.selectedIndex].text;
                 
-            // Update the branch name immediately for a better user experience
             document.getElementById("selectedBranch").textContent = selectedBranchName;
 
             // Send request to fetch branch revenue

@@ -21,7 +21,6 @@ if (!$conn) {
     exit;
 }
 
-/* Ownership check (minimal) */
 $chk = $conn->prepare("SELECT user_id FROM orders WHERE order_id = ? AND user_id = ?");
 if (!$chk) {
     $conn->close();
@@ -69,7 +68,6 @@ if ($stmt) {
         }
         if (isset($res)) $res->free();
     } else {
-        /* fallback bind_result for environments without mysqlnd */
         $stmt->bind_result($oid, $odate, $ostatus, $ototal, $fname, $lname, $bname, $pname, $qty, $iprice);
         while ($stmt->fetch()) {
             if (!$order) {
@@ -91,15 +89,12 @@ if ($stmt) {
     }
 
     $stmt->close();
-    /* drain extra resultsets to avoid "commands out of sync" */
     while ($conn->more_results() && $conn->next_result()) {
         $extra = $conn->use_result();
         if ($extra) $extra->free();
     }
 }
 
-/* Preserve original design: fetch image_url for each product (stored proc doesn't return it).
-   Do this after closing/draining the proc results to avoid "commands out of sync". */
 if (!empty($items)) {
     $imgStmt = $conn->prepare("SELECT image_url FROM products WHERE product_name = ? LIMIT 1");
     foreach ($items as &$it) {

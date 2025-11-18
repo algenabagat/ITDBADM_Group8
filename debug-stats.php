@@ -2,7 +2,6 @@
 session_start();
 require_once 'config.php';
 
-// Don't check auth for debug
 $conn = getDBConnection($host, $user, $password, $database, $port);
 
 echo "<pre>";

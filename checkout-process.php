@@ -28,7 +28,7 @@ if ($full_name === '' || $address === '' || $phone === '' || $email === '' || $p
 
 $conn = getDBConnection($host, $user, $password, $database, $port);
 
-// fetch cart again (to avoid tampering)
+// fetch cart again 
 $cartItems = [];
 $total = 0.00;
 
@@ -53,16 +53,12 @@ if (empty($cartItems)) {
     exit;
 }
 
-// now safe to read branch_id from first cart item
 $branch_id = (int)$cartItems[0]['branch_id'];
-
-// optional: compare posted total with computed total
-// if (abs($total - $confirm_total) > 0.01) { ... }
 
 $conn->begin_transaction();
 
 try {
-    // 1) Insert order
+    // Insert order
     $status = 'Pending';
     $orderStmt = $conn->prepare("INSERT INTO orders (user_id, branch_id, total_amount, status) VALUES (?, ?, ?, ?)");
     $orderStmt->bind_param("iids", $user_id, $branch_id, $total, $status);
@@ -70,7 +66,7 @@ try {
     $order_id = $orderStmt->insert_id;
     $orderStmt->close();
 
-    // 2) Insert order_items
+    // Insert order_items
     $itemStmt = $conn->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
     foreach ($cartItems as $item) {
         $pid = (int)$item['product_id'];
@@ -81,7 +77,7 @@ try {
     }
     $itemStmt->close();
 
-    // 2B) Reduce product stock immediately after inserting order_items
+    // Reduce product stock immediately after inserting order_items
     $stockStmt = $conn->prepare("UPDATE products SET stock = stock - ? WHERE product_id = ?");
     foreach ($cartItems as $item) {
         $qty = (int)$item['quantity'];
@@ -91,7 +87,7 @@ try {
     }
     $stockStmt->close();
 
-    // 3) Create payment record (fake, status Pending)
+    // Create payment record 
     // map payment_method string -> payment_method_id in payment_methods table
     $pmMap = [
         'Cash'  => 1,
@@ -102,7 +98,7 @@ try {
         'GCash' => 4,
     ];
     $payment_method_id = $pmMap[$payment_method] ?? 1;
-    $currency_id = 1; // 1 = PHP from your dump
+    $currency_id = 1; 
     $payStatus = 'Pending';
 
     $payStmt = $conn->prepare("INSERT INTO payments (order_id, amount, payment_method_id, currency_id, status) VALUES (?, ?, ?, ?, ?)");
@@ -110,13 +106,12 @@ try {
     $payStmt->execute();
     $payStmt->close();
 
-    // 4) Clear cart
+    // Clear cart
     $delStmt = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
     $delStmt->bind_param("i", $user_id);
     $delStmt->execute();
     $delStmt->close();
 
-    // commit
     $conn->commit();
 
     // store last order info in session for summary page
@@ -129,7 +124,6 @@ try {
     'payment_method' => $payment_method,
     'total'     => $total,
 
-    // 🔥 ADD THESE 4 FIELDS
     'currency' => $_POST['currency'] ?? 'PHP',
     'rates' => [
         'PHP' => 1,

@@ -2,7 +2,7 @@
 session_start();
 require_once 'config.php';
 
-// Check session and authorization (same logic as get-monthly-revenue.php)
+// Check session and authorization 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
@@ -36,7 +36,6 @@ try {
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
     
-    // If a row is found, use its data; otherwise, set defaults
     if ($row) {
         $revenue = $row['total_revenue'] ?? 0;
         $branch_name = $row['branch_name'] ?? 'Unknown Branch';

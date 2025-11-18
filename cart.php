@@ -42,14 +42,12 @@ if ($conn) {
             }
         }
 
-        // CLOSE and DRAIN before issuing any other queries on the connection
         $proc->close();
         while ($conn->more_results() && $conn->next_result()) {
             $extra = $conn->use_result();
             if ($extra) $extra->free();
         }
 
-        // Now it's safe to run additional queries for product details
         foreach ($procRows as $row) {
             $cart_id = (int)($row['cart_id'] ?? 0);
             if ($cart_id) {
@@ -85,7 +83,7 @@ if ($conn) {
         }
     }
 
-    // calculate cart total using stored procedure (preferred)
+    // calculate cart total using stored procedure
     $calc = $conn->prepare("CALL CalculateCartTotal(?, @cart_total)");
     if ($calc) {
         $calc->bind_param('i', $user_id);
@@ -103,7 +101,6 @@ if ($conn) {
             if ($extra) $extra->free();
         }
     } else {
-        // fallback: sum locally if the procedure is unavailable
         foreach ($cartItems as $item) {
             $total += ($item['subtotal'] ?? 0);
         }

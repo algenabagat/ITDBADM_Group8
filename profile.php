@@ -1,5 +1,4 @@
 <?php
-// server-side logic first
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
@@ -144,7 +143,6 @@ if ($conn) {
                             $total = number_format((float)($order['total_amount'] ?? 0), 2);
                             $status = htmlspecialchars($order['status'] ?? '', ENT_QUOTES, 'UTF-8');
 
-                            // preserve original status -> class mapping (case-insensitive)
                             $statusLower = strtolower($status);
                             $statusClass = '';
                             if ($statusLower === 'pending') $statusClass = 'status-pending';
