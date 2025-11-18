@@ -359,7 +359,37 @@
 .data-table td {
     padding: 16px;
     text-align: left;
-    border-bottom: 1px solid #F2EEE9;
+    border-bottom: none; /* keep as-is */
+    position: relative;  /* ensure cells sit above the separator */
+    z-index: 2;
+}
+
+/* REMOVE the old inset-shadow rule and replace with a full-width line drawn by each tbody row */
+.data-table tbody td {
+    box-shadow: none; /* removed to avoid double lines */
+    background: transparent; /* ensure row background sits below the separator */
+}
+
+/* draw a continuous separator line across the full table width for every row */
+.data-table tbody tr {
+    position: relative;
+}
+.data-table tbody tr::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: #F2EEE9; /* same separator color as before */
+    pointer-events: none;
+    z-index: 1; /* below cell content (z-index:2) but above row background */
+}
+
+/* keep header above everything */
+.data-table thead th {
+    position: relative;
+    z-index: 3;
 }
 
 .data-table th {

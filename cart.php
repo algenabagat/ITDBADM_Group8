@@ -14,27 +14,83 @@ $cartItems = [];
 $total = 0.00;
 
 if ($conn) {
-    $sql = "SELECT c.cart_id, c.quantity, p.product_id, p.product_name, p.price, p.image_url, p.stock
-            FROM cart c
-            JOIN products p ON c.product_id = p.product_id
-            WHERE c.user_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    while ($row = $res->fetch_assoc()) {
-        $row['subtotal'] = $row['price'] * $row['quantity'];
-        $cartItems[] = $row;
-    }
-    $stmt->close();
-
-    // calculate cart total using stored procedure (preferred)
-    $total = 0.00;
-    $proc = $conn->prepare("CALL CalculateCartTotal(?, @cart_total)");
+    // Use stored procedure GetUserCart to fetch base cart rows
+    $proc = $conn->prepare("CALL GetUserCart(?)");
     if ($proc) {
         $proc->bind_param('i', $user_id);
         $proc->execute();
+
+        $procRows = [];
+        if (method_exists($proc, 'get_result')) {
+            $res = $proc->get_result();
+            while ($row = $res->fetch_assoc()) {
+                $row['subtotal'] = isset($row['total_price']) ? (float)$row['total_price'] : ((float)$row['price'] * (int)$row['quantity']);
+                $procRows[] = $row;
+            }
+            if (isset($res)) $res->free();
+        } else {
+            // fallback when mysqlnd not available
+            $proc->bind_result($cart_id, $product_name, $price, $quantity, $total_price);
+            while ($proc->fetch()) {
+                $procRows[] = [
+                    'cart_id' => $cart_id,
+                    'product_name' => $product_name,
+                    'price' => $price,
+                    'quantity' => $quantity,
+                    'subtotal' => $total_price,
+                ];
+            }
+        }
+
+        // CLOSE and DRAIN before issuing any other queries on the connection
         $proc->close();
+        while ($conn->more_results() && $conn->next_result()) {
+            $extra = $conn->use_result();
+            if ($extra) $extra->free();
+        }
+
+        // Now it's safe to run additional queries for product details
+        foreach ($procRows as $row) {
+            $cart_id = (int)($row['cart_id'] ?? 0);
+            if ($cart_id) {
+                $pstmt = $conn->prepare("SELECT p.product_id, p.image_url, p.stock FROM cart c JOIN products p ON c.product_id = p.product_id WHERE c.cart_id = ?");
+                if ($pstmt) {
+                    $pstmt->bind_param('i', $cart_id);
+                    $pstmt->execute();
+                    if (method_exists($pstmt, 'get_result')) {
+                        $pres = $pstmt->get_result();
+                        if ($pres) {
+                            $pinfo = $pres->fetch_assoc();
+                            $row['product_id'] = $pinfo['product_id'] ?? null;
+                            $row['image_url']  = $pinfo['image_url'] ?? null;
+                            $row['stock']      = isset($pinfo['stock']) ? (int)$pinfo['stock'] : 0;
+                            $pres->free();
+                        }
+                    } else {
+                        $pstmt->bind_result($ppid, $pimg, $pstock);
+                        if ($pstmt->fetch()) {
+                            $row['product_id'] = $ppid;
+                            $row['image_url'] = $pimg;
+                            $row['stock'] = (int)$pstock;
+                        }
+                    }
+                    $pstmt->close();
+                }
+            } else {
+                $row['product_id'] = null;
+                $row['image_url'] = null;
+                $row['stock'] = 0;
+            }
+            $cartItems[] = $row;
+        }
+    }
+
+    // calculate cart total using stored procedure (preferred)
+    $calc = $conn->prepare("CALL CalculateCartTotal(?, @cart_total)");
+    if ($calc) {
+        $calc->bind_param('i', $user_id);
+        $calc->execute();
+        $calc->close();
 
         $out = $conn->query("SELECT @cart_total AS total_amount");
         if ($out) {
@@ -42,8 +98,6 @@ if ($conn) {
             $total = (float)($r['total_amount'] ?? 0.00);
             $out->free();
         }
-
-        // drain any extra resultsets from the CALL
         while ($conn->more_results() && $conn->next_result()) {
             $extra = $conn->use_result();
             if ($extra) $extra->free();
@@ -51,7 +105,7 @@ if ($conn) {
     } else {
         // fallback: sum locally if the procedure is unavailable
         foreach ($cartItems as $item) {
-            $total += $item['subtotal'];
+            $total += ($item['subtotal'] ?? 0);
         }
     }
 }

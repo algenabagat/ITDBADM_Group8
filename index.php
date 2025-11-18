@@ -31,11 +31,11 @@
           // Get selected branch from session
           $selectedBranchId = $_SESSION['selected_branch_id'] ?? 0;
           
-          $sql = "SELECT product_id FROM products";
+          $sql = "SELECT product_id FROM products WHERE is_available = 'Yes'";
           if ($selectedBranchId > 0) {
-              $sql .= " WHERE branch_id = ?";
+              $sql .= " AND branch_id = ?";
           }
-          $sql .= " ORDER BY date_added DESC LIMIT 5";
+          $sql .= " ORDER BY RAND() LIMIT 5";
           
           $stmt = $conn->prepare($sql);
           if ($selectedBranchId > 0) {
@@ -67,11 +67,11 @@
           $selectedBranchId = $_SESSION['selected_branch_id'] ?? 0;
           
           $sql = "SELECT product_id, product_name, price, image_url, description 
-                  FROM products";
+                  FROM products WHERE is_available = 'Yes'";
           if ($selectedBranchId > 0) {
-              $sql .= " WHERE branch_id = ?";
+              $sql .= " AND branch_id = ?";
           }
-          $sql .= " ORDER BY date_added DESC LIMIT 5";
+          $sql .= " ORDER BY RAND() LIMIT 5";
           
           $stmt = $conn->prepare($sql);
           if ($selectedBranchId > 0) {
