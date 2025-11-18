@@ -39,16 +39,15 @@
 .watch-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 30px; /* Consistent gap between cards */
+    gap: 30px; 
 }
 
 .item-card {
     margin-bottom: 30px;
-    flex: 0 0 calc(25% - 30px); /* 4 cards per row with consistent spacing */
+    flex: 0 0 calc(25% - 30px); 
     box-sizing: border-box;
 }
 
-/* Clear All button styles */
 .filter-submit-row {
     display: flex;
     gap: 15px;
@@ -88,16 +87,15 @@
     background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Responsive adjustments */
 @media (max-width: 1200px) {
     .item-card {
-        flex: 0 0 calc(33.333% - 30px); /* 3 cards per row on smaller screens */
+        flex: 0 0 calc(33.333% - 30px); 
     }
 }
 
 @media (max-width: 992px) {
     .item-card {
-        flex: 0 0 calc(50% - 30px); /* 2 cards per row on tablets */
+        flex: 0 0 calc(50% - 30px); 
     }
     
     .shop-container {
@@ -118,7 +116,7 @@
 
 @media (max-width: 768px) {
     .item-card {
-        flex: 0 0 100%; /* 1 card per row on mobile */
+        flex: 0 0 100%; 
     }
     
     .shop-container {

@@ -48,14 +48,14 @@
 .icons {
     display: flex;
     align-items: center;
-    gap: 16px; /* equal space between each top-level icon/group */
+    gap: 16px; 
 }
 
 .icons > div {
-    position: relative; /* keep existing behavior */
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 12px; /* spacing between items inside the group (cart, count, logout) */
+    gap: 12px; 
 }
 
 .icons a,
@@ -86,7 +86,7 @@
 }
 
 .cart-link {
-    position: relative; /* cart-count will be positioned relative to this */
+    position: relative; 
     display: inline-flex;
     align-items: center;
     padding: 0;
@@ -574,7 +574,7 @@
 }
 
 .item-card {
-    flex: 0 0 calc(25% - 26.25px); /* 25% width minus gap */
+    flex: 0 0 calc(25% - 26.25px); 
 }
 
 /* filter stuff*/
@@ -766,7 +766,6 @@ html, body {
     appearance: auto !important;
 }
 
-/* Minimalist Branch Dropdown Styles */
 .branch-dropdown {
     margin-right: 20px;
 }

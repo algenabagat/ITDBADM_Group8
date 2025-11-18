@@ -71,19 +71,17 @@
     height: 20px;
 }
 
-/* Change size and border color of input fields */
 .form-control {
-  height: 50px;              /* controls field height */
-  font-size: 16px;           /* controls text size */
-  border: 1px solid #8692A6; /* change border color */
-  border-radius: 6px;        /* optional: round edges */
-  padding: 10px 15px;        /* inner spacing */
+  height: 50px;              
+  font-size: 16px;           
+  border: 1px solid #8692A6; 
+  border-radius: 6px;       
+  padding: 10px 15px;        
 }
 
-/* Optional: change border color when focused */
 .form-control:focus {
-  border-color: #0056b3;     /* darker shade when active */
-  box-shadow: none;          /* remove Bootstrap blue glow */
+  border-color: #0056b3;     
+  box-shadow: none;          
 }
 
 .login-btn {
@@ -108,11 +106,10 @@
     font-size: 16px;
 }
 
-/* Add this block to control the right section vertical offset */
 .right-section {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding-top: 20px; /* adjust value to move further up/down */
+    padding-top: 20px; 
 }
 
