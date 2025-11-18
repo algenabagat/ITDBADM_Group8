@@ -36,7 +36,7 @@ if (!$conn) {
 $cartItems = [];
 $total = 0.00;
 
-$sql = "SELECT c.cart_id, c.quantity, p.product_id, p.product_name, p.price
+$sql = "SELECT c.cart_id, c.quantity, p.product_id, p.product_name, p.price, p.branch_id
         FROM cart c
         JOIN products p ON c.product_id = p.product_id
         WHERE c.user_id = ?";
@@ -49,6 +49,7 @@ while ($row = $res->fetch_assoc()) {
     $total += $row['subtotal'];
     $cartItems[] = $row;
 }
+$branch_id = $cartItems[0]['branch_id'];
 $stmt->close();
 
 if (empty($cartItems)) {
@@ -65,8 +66,8 @@ $conn->begin_transaction();
 try {
     // 1) Insert order
     $status = 'Pending';
-    $orderStmt = $conn->prepare("INSERT INTO orders (user_id, total_amount, status) VALUES (?, ?, ?)");
-    $orderStmt->bind_param("ids", $user_id, $total, $status);
+    $orderStmt = $conn->prepare("INSERT INTO orders (user_id, branch_id, total_amount, status) VALUES (?, ?, ?, ?)");
+    $orderStmt->bind_param("iids", $user_id, $branch_id, $total, $status);
     $orderStmt->execute();
     $order_id = $orderStmt->insert_id;
     $orderStmt->close();
