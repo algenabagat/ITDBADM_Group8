@@ -1,6 +1,100 @@
-<?php 
-  require_once 'config.php';
-  $conn = getDBConnection($host, $user, $password, $database, $port);
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+require_once 'config.php';
+$conn = getDBConnection($host, $user, $password, $database, $port);
+
+$selectedBranch = isset($_SESSION['branch_id']) ? (int)$_SESSION['branch_id'] : null;
+
+// detect whether any GET filters/search are present
+$haveFilters = !empty($_GET['brands']) || !empty($_GET['categories']) || !empty($_GET['gender'])
+    || !empty($_GET['price']) || !empty($_GET['dial_color']) || !empty($_GET['dial_shape'])
+    || !empty($_GET['dial_type']) || !empty($_GET['strap_color']) || !empty($_GET['strap_material'])
+    || !empty($_GET['q']);
+
+$products = [];
+
+if ($conn) {
+    if (!$haveFilters && $selectedBranch !== null) {
+        $stmt = $conn->prepare("CALL GetProductsByBranch(?)");
+        if ($stmt) {
+            $stmt->bind_param('i', $selectedBranch);
+            $stmt->execute();
+
+            $res = false;
+            if (method_exists($stmt, 'get_result')) {
+                $res = $stmt->get_result();
+                if ($res) {
+                    while ($row = $res->fetch_assoc()) $products[] = $row;
+                    $res->free();
+                }
+            }
+
+            if ($res === false) {
+                $stmt->bind_result($pid, $pname, $brand, $category, $price, $stock);
+                while ($stmt->fetch()) {
+                    $products[] = [
+                        'product_id'   => $pid,
+                        'product_name' => $pname,
+                        'brand_name'   => $brand,
+                        'category_name'=> $category,
+                        'price'        => $price,
+                        'stock'        => $stock,
+                    ];
+                }
+            }
+
+            $stmt->close();
+            while ($conn->more_results() && $conn->next_result()) { $extra = $conn->use_result(); if ($extra) $extra->free(); }
+        } else {
+            error_log("Prepare failed GetProductsByBranch: " . $conn->error);
+        }
+
+    } else {
+        // Filters are present — call SearchProducts(search_term, category_id, brand_id, min_price, max_price)
+        $search    = !empty($_GET['q']) ? $_GET['q'] : null;
+        $category  = !empty($_GET['category_id']) ? (int)$_GET['category_id'] : null;
+        $brand     = !empty($_GET['brand_id']) ? (int)$_GET['brand_id'] : null;
+        $minPrice  = isset($_GET['min_price']) && $_GET['min_price'] !== '' ? (float)$_GET['min_price'] : null;
+        $maxPrice  = isset($_GET['max_price']) && $_GET['max_price'] !== '' ? (float)$_GET['max_price'] : null;
+
+        $stmt = $conn->prepare("CALL SearchProducts(?, ?, ?, ?, ?)");
+        if ($stmt) {
+            // correct type string: 'siidd' => s, i, i, d, d
+            // bind variables (can be null)
+            $stmt->bind_param('siidd', $search, $category, $brand, $minPrice, $maxPrice);
+            $stmt->execute();
+
+            if (method_exists($stmt, 'get_result')) {
+                $res = $stmt->get_result();
+                if ($res) {
+                    while ($row = $res->fetch_assoc()) $products[] = $row;
+                    $res->free();
+                }
+            } else {
+                // fallback: fetch via bind_result (adjust columns to SP SELECT)
+                $stmt->bind_result($pid, $pname, $brandn, $catn, $price, $stock, $img);
+                while ($stmt->fetch()) {
+                    $products[] = [
+                        'product_id'   => $pid,
+                        'product_name' => $pname,
+                        'brand_name'   => $brandn,
+                        'category_name'=> $catn,
+                        'price'        => $price,
+                        'stock'        => $stock,
+                        'image_url'    => $img,
+                    ];
+                }
+            }
+
+            $stmt->close();
+            while ($conn->more_results() && $conn->next_result()) { $extra = $conn->use_result(); if ($extra) $extra->free(); }
+        } else {
+            error_log("Prepare failed SearchProducts: " . $conn->error);
+        }
+    }
+}
+
+// now $products contains rows to render
 ?>
 
 <!doctype html>

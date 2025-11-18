@@ -24,10 +24,36 @@ if ($conn) {
     $res = $stmt->get_result();
     while ($row = $res->fetch_assoc()) {
         $row['subtotal'] = $row['price'] * $row['quantity'];
-        $total += $row['subtotal'];
         $cartItems[] = $row;
     }
     $stmt->close();
+
+    // calculate cart total using stored procedure (preferred)
+    $total = 0.00;
+    $proc = $conn->prepare("CALL CalculateCartTotal(?, @cart_total)");
+    if ($proc) {
+        $proc->bind_param('i', $user_id);
+        $proc->execute();
+        $proc->close();
+
+        $out = $conn->query("SELECT @cart_total AS total_amount");
+        if ($out) {
+            $r = $out->fetch_assoc();
+            $total = (float)($r['total_amount'] ?? 0.00);
+            $out->free();
+        }
+
+        // drain any extra resultsets from the CALL
+        while ($conn->more_results() && $conn->next_result()) {
+            $extra = $conn->use_result();
+            if ($extra) $extra->free();
+        }
+    } else {
+        // fallback: sum locally if the procedure is unavailable
+        foreach ($cartItems as $item) {
+            $total += $item['subtotal'];
+        }
+    }
 }
 ?>
 <!DOCTYPE html>

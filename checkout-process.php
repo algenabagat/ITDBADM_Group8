@@ -27,10 +27,6 @@ if ($full_name === '' || $address === '' || $phone === '' || $email === '' || $p
 }
 
 $conn = getDBConnection($host, $user, $password, $database, $port);
-if (!$conn) {
-    header("Location: checkout.php?error=" . urlencode("Database error."));
-    exit;
-}
 
 // fetch cart again (to avoid tampering)
 $cartItems = [];
@@ -49,7 +45,6 @@ while ($row = $res->fetch_assoc()) {
     $total += $row['subtotal'];
     $cartItems[] = $row;
 }
-$branch_id = $cartItems[0]['branch_id'];
 $stmt->close();
 
 if (empty($cartItems)) {
@@ -57,6 +52,9 @@ if (empty($cartItems)) {
     header("Location: cart.php?error=" . urlencode("Your cart is empty."));
     exit;
 }
+
+// now safe to read branch_id from first cart item
+$branch_id = (int)$cartItems[0]['branch_id'];
 
 // optional: compare posted total with computed total
 // if (abs($total - $confirm_total) > 0.01) { ... }
@@ -132,18 +130,16 @@ try {
     'total'     => $total,
 
     // 🔥 ADD THESE 4 FIELDS
-    'currency' => $_POST['currency'],
+    'currency' => $_POST['currency'] ?? 'PHP',
     'rates' => [
         'PHP' => 1,
         'USD' => 0.018,
         'EUR' => 0.0165
     ],
-    'symbol' => ($_POST['currency'] === 'PHP' ? '₱' : ($_POST['currency'] === 'USD' ? '$' : '€')),
-    'converted_total' => $total * (
-        $_POST['currency'] === 'PHP' ? 1 :
-        ($_POST['currency'] === 'USD' ? 0.018 : 0.0165)
-    ),
-];
+    'symbol' => ($_POST['currency'] ?? 'PHP') === 'PHP' ? '₱' : (($_POST['currency'] ?? 'PHP') === 'USD' ? '$' : '€'),
+    'converted_total' => $total * (($_POST['currency'] ?? 'PHP') === 'PHP' ? 1 : (($_POST['currency'] ?? 'PHP') === 'USD' ? 0.018 : 0.0165)),
+
+    ];
 
 
     $conn->close();

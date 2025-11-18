@@ -123,7 +123,7 @@ CREATE TABLE `cart` (
   KEY `fk_cart_product` (`product_id`),
   CONSTRAINT `fk_cart_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
   CONSTRAINT `fk_cart_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -226,33 +226,6 @@ INSERT INTO `currencies` VALUES (1,'PHP',1.0000),(2,'USD',0.0180),(3,'EUR',0.016
 UNLOCK TABLES;
 
 --
--- Table structure for table `logs`
---
-
-DROP TABLE IF EXISTS `logs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `logs` (
-  `log_id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int DEFAULT NULL,
-  `action` varchar(255) DEFAULT NULL,
-  `log_date` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`log_id`),
-  KEY `fk_logs_user` (`user_id`),
-  CONSTRAINT `fk_logs_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `logs`
---
-
-LOCK TABLES `logs` WRITE;
-/*!40000 ALTER TABLE `logs` DISABLE KEYS */;
-/*!40000 ALTER TABLE `logs` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `order_items`
 --
 
@@ -270,7 +243,7 @@ CREATE TABLE `order_items` (
   KEY `fk_orderitems_product` (`product_id`),
   CONSTRAINT `fk_orderitems_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
   CONSTRAINT `fk_orderitems_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -279,7 +252,7 @@ CREATE TABLE `order_items` (
 
 LOCK TABLES `order_items` WRITE;
 /*!40000 ALTER TABLE `order_items` DISABLE KEYS */;
-INSERT INTO `order_items` VALUES (1,1,22,1,54000.00),(2,2,23,1,42000.00),(3,2,22,2,54000.00),(4,3,27,1,42000.00),(5,4,23,1,42000.00),(6,4,46,1,62000.00);
+INSERT INTO `order_items` VALUES (1,1,22,1,54000.00),(2,2,23,1,42000.00),(3,2,22,2,54000.00),(4,3,27,1,42000.00),(5,4,23,1,42000.00),(6,4,46,1,62000.00),(12,10,27,2,42000.00),(32,30,27,1,42000.00),(33,31,28,1,30000.00),(34,32,27,1,42000.00);
 /*!40000 ALTER TABLE `order_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -302,7 +275,7 @@ CREATE TABLE `orders` (
   KEY `fk_orders_branch` (`branch_id`),
   CONSTRAINT `fk_orders_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`branch_id`),
   CONSTRAINT `fk_orders_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -311,7 +284,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1,8,NULL,'2025-11-17 11:40:11','Shipped',54000.00),(2,8,NULL,'2025-11-17 19:55:11','Pending',150000.00),(3,7,2,'2025-11-18 09:39:20','Pending',42000.00),(4,8,1,'2025-11-18 10:26:25','Pending',104000.00);
+INSERT INTO `orders` VALUES (1,8,NULL,'2025-11-17 11:40:11','Shipped',54000.00),(2,8,NULL,'2025-11-17 19:55:11','Pending',150000.00),(3,7,2,'2025-11-18 09:39:20','Pending',42000.00),(4,8,1,'2025-11-18 10:26:25','Pending',104000.00),(10,10,2,'2025-11-18 10:44:45','Pending',84000.00),(30,10,2,'2025-11-18 14:51:33','Pending',42000.00),(31,10,2,'2025-11-18 14:52:43','Pending',30000.00),(32,10,2,'2025-11-18 14:57:34','Pending',42000.00);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -361,7 +334,7 @@ CREATE TABLE `payments` (
   CONSTRAINT `fk_payments_currency` FOREIGN KEY (`currency_id`) REFERENCES `currencies` (`currency_id`),
   CONSTRAINT `fk_payments_method` FOREIGN KEY (`payment_method_id`) REFERENCES `payment_methods` (`payment_method_id`),
   CONSTRAINT `fk_payments_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -370,7 +343,7 @@ CREATE TABLE `payments` (
 
 LOCK TABLES `payments` WRITE;
 /*!40000 ALTER TABLE `payments` DISABLE KEYS */;
-INSERT INTO `payments` VALUES (1,1,'2025-11-17 11:40:11',54000.00,4,1,'Completed'),(2,2,'2025-11-17 19:55:11',150000.00,2,1,'Completed'),(3,3,'2025-11-18 09:39:20',42000.00,2,1,'Completed'),(4,4,'2025-11-18 10:26:25',104000.00,1,1,'Completed');
+INSERT INTO `payments` VALUES (1,1,'2025-11-17 11:40:11',54000.00,4,1,'Completed'),(2,2,'2025-11-17 19:55:11',150000.00,2,1,'Completed'),(3,3,'2025-11-18 09:39:20',42000.00,2,1,'Completed'),(4,4,'2025-11-18 10:26:25',104000.00,1,1,'Completed'),(5,10,'2025-11-18 10:44:45',84000.00,1,1,'Completed'),(25,30,'2025-11-18 14:51:33',42000.00,1,1,'Completed'),(26,31,'2025-11-18 14:52:43',30000.00,1,1,'Completed'),(27,32,'2025-11-18 14:57:34',42000.00,1,1,'Completed');
 /*!40000 ALTER TABLE `payments` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -472,7 +445,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (1,1,1,'Men',1,'Seiko Presage Cocktail Time SRPB43','Automatic dress watch inspired by cocktail bar aesthetics',25500.00,19,'Yes','img/products/seiko_presage_cocktail_time_srpb43.png','2025-11-05 09:32:52','Blue','Round','Analog','Black','Leather'),(2,1,1,'Men',1,'Seiko 5 Sports SRPD55','Robust automatic sports watch with 100m water resistance',18000.00,20,'Yes','img/products/seiko_5_sports_srpd55.png','2025-11-05 09:35:55','Black','Round','Analog','Black','Metal'),(3,1,1,'Women',1,'Seiko Lukia SSVW184','Elegant women’s automatic watch with rose-gold accents',23000.00,10,'Yes','img/products/seiko_lukia_ssvw184.jpg','2025-11-05 09:36:47','White','Round','Analog','Rose Gold','Metal'),(4,1,1,'Men',1,'Seiko Prospex SRPC93 \"Save the Ocean\"','Dive watch with textured dial and 200m water resistance',32000.00,12,'Yes','img/products/seiko_prospex_srpc93.jpg','2025-11-05 09:36:58','Blue','Round','Analog','Blue','Rubber'),(5,1,1,'Unisex',1,'Seiko Solar Chronograph SSC209','Solar-powered chronograph with alarm and 100 metre water resistance',22000.00,18,'Yes','img/products/seiko_solar_chronograph_ssc209.jpg','2025-11-05 09:37:05','Silver','Round','Analog','Black','Leather'),(6,2,2,'Men',1,'Hamilton Khaki Field Mechanical H70455533','Manual-wind field watch with military heritage',28000.00,9,'Yes','img/products/hamilton_khaki_field_mechanical_h70455533.jpg','2025-11-16 07:16:19','Black','Round','Analog','Brown','Leather'),(7,2,2,'Men',1,'Hamilton Jazzmaster Thinline H38511733','Slim dress watch with day/date function',32000.00,8,'Yes','img/products/hamilton_jazzmaster_thinline_h38511733.jpg','2025-11-16 07:27:19','Silver','Round','Analog','Black','Leather'),(9,2,2,'Men',1,'Hamilton Khaki Aviation Pilot Day Date H64615535','Pilot style automatic with day & date',30000.00,10,'Yes','img/products/hamilton_khaki_aviation_pilot_h64615535.jpg','2025-11-16 07:28:48','Green','Round','Analog','Brown','Leather'),(10,2,2,'Women',1,'Hamilton American Classic Intra-Matic H38425540','Vintage inspired automatic dress watch for women',34000.00,7,'Yes','img/products/hamilton_intra_matic_h38425540.jpg','2025-11-16 07:28:51','Blue','Round','Analog','Brown','Leather'),(11,2,2,'Unisex',1,'Hamilton Ventura H24411732','Iconic triangular automatic watch inspired by Elvis Presley',35000.00,6,'Yes','img/products/hamilton_ventura_h24411732.jpg','2025-11-16 07:31:11','Black','Triangular','Analog','Black','Leather'),(12,3,3,'Men',1,'Tissot PRX Powermatic 80 T137.407.11.351.00','Automatic sport-dress watch with 80-hour power reserve',49000.00,11,'Yes','img/products/tissot_prx_powermatic80_t13740711351.jpg','2025-11-16 07:39:44','Blue','Round','Analog','Silver','Metal'),(13,3,3,'Men',1,'Tissot Le Locle Powermatic 80 T006.407.11.053.00','Classic dress automatic with transparent caseback',47000.00,9,'Yes','img/products/tissot_le_locle_powermatic80_t00640711053.jpg','2025-11-16 07:39:44','White','Round','Analog','Black','Leather'),(14,3,3,'Women',1,'Tissot Bellissima T126.010.11.133.00','Elegant women’s automatic watch designed to be worn for those magic moments and special occasions',42000.00,5,'Yes','img/products/tissot_bellissima_t09421011111.jpg','2025-11-16 07:39:44','Green','Round','Analog','Silver','Metal'),(15,3,3,'Men',1,'Tissot Seastar 1000 Powermatic 80 T120.410.33.041.00','Diver-style automatic with 300m water resistance',56000.00,8,'Yes','img/products/tissot_seastar1000_powermatic80_t12041033041.jpg','2025-11-16 07:39:44','Blue','Round','Analog','Black','Rubber'),(16,3,3,'Unisex',1,'Tissot Everytime T143.410.11.091.00','Minimalist quartz watch ideal for everyday wear',19000.00,20,'Yes','img/products/tissot_everytime_t14341011091.jpg','2025-11-16 07:41:22','White','Round','Analog','Brown','Leather'),(17,4,4,'Men',1,'Orient Bambino Ver 4 Automatic','Domed crystal dress automatic with classic styling',16000.00,12,'Yes','img/products/orient_bambino_version4_fac0000dw0.jpg','2025-11-16 07:52:44','Brown','Round','Analog','Black','Leather'),(18,4,4,'Men',1,'ORIENT Bambino Small Seconds 38MM RA-AP0101B','Dress automatic with small-seconds subdial',16500.00,10,'Yes','img/products/orient_bambino_small_seconds_raap0002s10a.jpg','2025-11-16 07:52:47','Black','Round','Analog','Black','Leather'),(19,4,4,'Women',1,'Orient Bambino RA-AG0019L10B','Elegant ladies dress automatic with blue dial',17000.00,8,'Yes','img/products/orient_bambino_raag0019l10b.jpg','2025-11-16 07:52:49','Blue','Round','Analog','Silver','Metal'),(20,4,4,'Men',1,'Orient Classic RA-AP01 Bambino 38 Small Seconds','Automatic with gold-tone case and vintage look',17500.00,6,'Yes','img/products/orient_bambino_ra-ap01.jpg','2025-11-16 07:52:52','White','Round','Analog','Brown','Leather'),(21,4,4,'Unisex',1,'Orient Bambino RA-AC0001Y00A','Affordable classic automatic with sunburst dial',15000.00,14,'Yes','img/products/orient_bambino_raac0001y00a.jpg','2025-11-16 07:52:55','Green','Round','Analog','Brown','Leather'),(22,5,5,'Men',1,'Certina DS Action Automatic C032.407.11.051.00','Sport automatic with 200m water resistance and robust build',54000.00,7,'Yes','img/products/certina_ds_action_automatic_c03240711051.jpg','2025-11-16 08:01:37','Black','Round','Analog','Silver','Metal'),(23,5,5,'Men',1,'Certina DS Caimano Powermatic 80 C035.407.36.010.00','Classic automatic with 80-hour reserve and sapphire dress look',42000.00,7,'Yes','img/products/certina_ds_caimano_powermatic80_c03540736010.jpg','2025-11-16 08:01:37','Silver','Round','Analog','Brown','Leather'),(24,5,5,'Women',1,'Certina DS-8 Automatic C033.051.11.011.00','Elegant women’s automatic with diamond markers',46000.00,5,'Yes','img/products/certina_ds8_automatic_c03305111011.jpg','2025-11-16 08:01:37','White','Round','Analog','Silver','Metal'),(25,5,5,'Men',1,'Certina DS Podium GMT C021.429.11.051.00','GMT automatic with sporty styling and ceramic bezel',48000.00,6,'Yes','img/products/certina_ds_podium_gmt_c02142911051.jpg','2025-11-16 08:01:37','Blue','Round','Analog','Silver','Metal'),(26,5,5,'Unisex',1,'Certina DS First Lady C014.210.11.116.00','Stylish automatic for women with mother-of-pearl dial',44000.00,9,'Yes','img/products/certina_ds_first_lady_c01421011116.jpg','2025-11-16 08:01:37','White','Round','Analog','Silver','Metal'),(27,1,1,'Men',2,'Seiko Presage Sharp Edged SPB167','A premium automatic with a crisp textured dial inspired by Japanese Asanoha patterns.',42000.00,9,'Yes','img/products/seiko_presage_spb167.jpg','2025-11-17 21:01:05','White','Round','Analog','Black','Leather'),(28,1,5,'Men',2,'Seiko Prospex Samurai SRPC93K1','Angular case diver with strong wrist presence and 200m WR.',30000.00,12,'Yes','img/products/seiko_prospex_samurai_srpc93.jpg','2025-11-17 21:01:05','Blue','Round','Analog','Blue','Rubber'),(29,1,2,'Unisex',2,'Seiko 5 Sports SRPE51','Modern field-style automatic with simplified dial.',17000.00,20,'Yes','img/products/seiko_5_sports_srpe51.jpg','2025-11-17 21:01:05','Gray','Round','Analog','Silver','Metal'),(30,1,3,'Women',2,'Seiko Essentials SUR877P1','Minimalist quartz watch perfect for elegant daily wear.',14000.00,8,'Yes','img/products/seiko_essentials_sur877.jpg','2025-11-17 21:01:05','Silver','Round','Analog','Silver','Metal'),(31,1,1,'Men',2,'Seiko Presage SRPG09J1','Warm-tone dial with classical dress design and automatic movement.',28000.00,11,'Yes','img/products/seiko_presage_srpg09.jpg','2025-11-17 21:01:05','Brown','Round','Analog','Brown','Leather'),(32,2,2,'Men',2,'Hamilton Khaki Field Auto Chrono H71616535','Military-inspired automatic chronograph with rugged charm.',55000.00,6,'Yes','img/products/hamilton_khaki_auto_chrono.jpg','2025-11-17 21:01:05','Black','Round','Analog','Brown','Leather'),(33,2,1,'Men',2,'Hamilton Jazzmaster Open Heart H32565735','Dress watch showcasing the movement through an open-heart dial.',48000.00,9,'Yes','img/products/hamilton_jazzmaster_openheart.jpg','2025-11-17 21:01:05','Blue','Round','Analog','Silver','Metal'),(34,2,1,'Women',2,'Hamilton American Classic Ardmore Quartz H11221514','Art-deco inspired rectangular ladies watch on leather strap.',25000.00,7,'Yes','img/products/hamilton_ardmore.jpg','2025-11-17 21:01:05','White','Rectangle','Analog','Brown','Leather'),(35,2,2,'Men',2,'Hamilton Khaki Navy Scuba Auto H82335131','Automatic diver with bright blue dial and sporty bezel.',37000.00,10,'Yes','img/products/hamilton_khaki_navy_scuba.jpg','2025-11-17 21:01:05','Blue','Round','Analog','Silver','Metal'),(36,2,3,'Unisex',2,'Hamilton Ventura Quartz H24411232','Modern triangular watch with iconic futuristic styling.',36000.00,5,'Yes','img/products/hamilton_ventura_quartz.jpg','2025-11-17 21:01:05','White','Triangular','Analog','Black','Leather'),(37,3,1,'Men',2,'Tissot Heritage Visodate T019.430.16.051.01','Classic heritage automatic with domed crystal and day-date.',31000.00,14,'Yes','img/products/tissot_visodate.jpg','2025-11-17 21:01:05','Black','Round','Analog','Black','Leather'),(38,3,3,'Men',2,'Tissot Supersport Chrono T125.617.33.051.00','Bold chronograph with sporty black PVD case.',28000.00,8,'Yes','img/products/tissot_supersport.jpg','2025-11-17 21:01:05','Black','Round','Analog','Black','Leather'),(39,3,1,'Women',2,'Tissot Flamingo T094.210.11.121.00','Slim and elegant ladies watch with mother-of-pearl dial.',22000.00,9,'Yes','img/products/tissot_flamingo.jpg','2025-11-17 21:01:05','White','Round','Analog','Silver','Metal'),(40,3,5,'Men',2,'Tissot Seastar 2000 Professional T120.607.17.041.00','ISO-rated diver with ceramic bezel and 600m WR.',60000.00,6,'Yes','img/products/tissot_seastar2000.jpg','2025-11-17 21:01:05','Blue','Round','Analog','Black','Rubber'),(41,3,3,'Unisex',2,'Tissot Classic Dream T129.410.11.051.00','Reliable quartz watch with clean and versatile design.',15000.00,20,'Yes','img/products/tissot_classic_dream.jpg','2025-11-17 21:01:05','Black','Round','Analog','Silver','Metal'),(42,4,4,'Men',2,'Orient Star Classic RE-AU0004B00B','Premium Orient automatic with power reserve indicator.',30000.00,5,'Yes','img/products/orient_star_classic.jpg','2025-11-17 21:01:05','Black','Round','Analog','Black','Leather'),(43,4,3,'Men',2,'Orient Kamasu RA-AA0002L19B','Highly popular diver with sapphire crystal and 200m WR.',17000.00,18,'Yes','img/products/orient_kamasu_blue.jpg','2025-11-17 21:01:05','Blue','Round','Analog','Silver','Metal'),(44,4,4,'Women',2,'Orient Contemporary Ladies RA-NR2002A','Dressy ladies automatic with gold-tone accents.',16000.00,7,'Yes','img/products/orient_contemporary_gold.jpg','2025-11-17 21:01:05','White','Round','Analog','Gold','Metal'),(45,4,3,'Unisex',2,'Orient Sports RA-AC0J02B10B','Sporty automatic with stealth black theme.',15500.00,13,'Yes','img/products/orient_sports_black.jpg','2025-11-17 21:01:05','Black','Round','Analog','Black','Rubber'),(46,5,5,'Men',2,'Certina DS Action Diver Titanium C032.607.44.051.00','Lightweight titanium diver with Powermatic 80 movement.',62000.00,5,'Yes','img/products/certina_ds_action_titanium.jpg','2025-11-17 21:01:05','Black','Round','Analog','Gray','Metal'),(47,5,4,'Men',2,'Certina DS-1 Automatic C029.807.11.051.00','Elegant automatic with vintage-inspired dial.',43000.00,10,'Yes','img/products/certina_ds1_auto.jpg','2025-11-17 21:01:05','Black','Round','Analog','Silver','Metal'),(48,5,3,'Unisex',2,'Certina Urban DS C021.610.11.031.00','Modern quartz watch ideal for everyday city wear.',24000.00,15,'Yes','img/products/certina_urban_ds.jpg','2025-11-17 21:01:05','Silver','Round','Analog','Silver','Metal');
+INSERT INTO `products` VALUES (1,1,1,'Men',1,'Seiko Presage Cocktail Time SRPB43','Automatic dress watch inspired by cocktail bar aesthetics',25500.00,19,'Yes','img/products/seiko_presage_cocktail_time_srpb43.png','2025-11-05 09:32:52','Blue','Round','Analog','Black','Leather'),(2,1,1,'Men',1,'Seiko 5 Sports SRPD55','Robust automatic sports watch with 100m water resistance',18000.00,20,'Yes','img/products/seiko_5_sports_srpd55.png','2025-11-05 09:35:55','Black','Round','Analog','Black','Metal'),(3,1,1,'Women',1,'Seiko Lukia SSVW184','Elegant women’s automatic watch with rose-gold accents',23000.00,10,'Yes','img/products/seiko_lukia_ssvw184.jpg','2025-11-05 09:36:47','White','Round','Analog','Rose Gold','Metal'),(4,1,1,'Men',1,'Seiko Prospex SRPC93 \"Save the Ocean\"','Dive watch with textured dial and 200m water resistance',32000.00,12,'Yes','img/products/seiko_prospex_srpc93.jpg','2025-11-05 09:36:58','Blue','Round','Analog','Blue','Rubber'),(5,1,1,'Unisex',1,'Seiko Solar Chronograph SSC209','Solar-powered chronograph with alarm and 100 metre water resistance',22000.00,18,'Yes','img/products/seiko_solar_chronograph_ssc209.jpg','2025-11-05 09:37:05','Silver','Round','Analog','Black','Leather'),(6,2,2,'Men',1,'Hamilton Khaki Field Mechanical H70455533','Manual-wind field watch with military heritage',28000.00,9,'Yes','img/products/hamilton_khaki_field_mechanical_h70455533.jpg','2025-11-16 07:16:19','Black','Round','Analog','Brown','Leather'),(7,2,2,'Men',1,'Hamilton Jazzmaster Thinline H38511733','Slim dress watch with day/date function',32000.00,8,'Yes','img/products/hamilton_jazzmaster_thinline_h38511733.jpg','2025-11-16 07:27:19','Silver','Round','Analog','Black','Leather'),(9,2,2,'Men',1,'Hamilton Khaki Aviation Pilot Day Date H64615535','Pilot style automatic with day & date',30000.00,10,'Yes','img/products/hamilton_khaki_aviation_pilot_h64615535.jpg','2025-11-16 07:28:48','Green','Round','Analog','Brown','Leather'),(10,2,2,'Women',1,'Hamilton American Classic Intra-Matic H38425540','Vintage inspired automatic dress watch for women',34000.00,7,'Yes','img/products/hamilton_intra_matic_h38425540.jpg','2025-11-16 07:28:51','Blue','Round','Analog','Brown','Leather'),(11,2,2,'Unisex',1,'Hamilton Ventura H24411732','Iconic triangular automatic watch inspired by Elvis Presley',35000.00,6,'Yes','img/products/hamilton_ventura_h24411732.jpg','2025-11-16 07:31:11','Black','Triangular','Analog','Black','Leather'),(12,3,3,'Men',1,'Tissot PRX Powermatic 80 T137.407.11.351.00','Automatic sport-dress watch with 80-hour power reserve',49000.00,11,'Yes','img/products/tissot_prx_powermatic80_t13740711351.jpg','2025-11-16 07:39:44','Blue','Round','Analog','Silver','Metal'),(13,3,3,'Men',1,'Tissot Le Locle Powermatic 80 T006.407.11.053.00','Classic dress automatic with transparent caseback',47000.00,9,'Yes','img/products/tissot_le_locle_powermatic80_t00640711053.jpg','2025-11-16 07:39:44','White','Round','Analog','Black','Leather'),(14,3,3,'Women',1,'Tissot Bellissima T126.010.11.133.00','Elegant women’s automatic watch designed to be worn for those magic moments and special occasions',42000.00,5,'Yes','img/products/tissot_bellissima_t09421011111.jpg','2025-11-16 07:39:44','Green','Round','Analog','Silver','Metal'),(15,3,3,'Men',1,'Tissot Seastar 1000 Powermatic 80 T120.410.33.041.00','Diver-style automatic with 300m water resistance',56000.00,8,'Yes','img/products/tissot_seastar1000_powermatic80_t12041033041.jpg','2025-11-16 07:39:44','Blue','Round','Analog','Black','Rubber'),(16,3,3,'Unisex',1,'Tissot Everytime T143.410.11.091.00','Minimalist quartz watch ideal for everyday wear',19000.00,20,'Yes','img/products/tissot_everytime_t14341011091.jpg','2025-11-16 07:41:22','White','Round','Analog','Brown','Leather'),(17,4,4,'Men',1,'Orient Bambino Ver 4 Automatic','Domed crystal dress automatic with classic styling',16000.00,12,'Yes','img/products/orient_bambino_version4_fac0000dw0.jpg','2025-11-16 07:52:44','Brown','Round','Analog','Black','Leather'),(18,4,4,'Men',1,'ORIENT Bambino Small Seconds 38MM RA-AP0101B','Dress automatic with small-seconds subdial',16500.00,10,'Yes','img/products/orient_bambino_small_seconds_raap0002s10a.jpg','2025-11-16 07:52:47','Black','Round','Analog','Black','Leather'),(19,4,4,'Women',1,'Orient Bambino RA-AG0019L10B','Elegant ladies dress automatic with blue dial',17000.00,8,'Yes','img/products/orient_bambino_raag0019l10b.jpg','2025-11-16 07:52:49','Blue','Round','Analog','Silver','Metal'),(20,4,4,'Men',1,'Orient Classic RA-AP01 Bambino 38 Small Seconds','Automatic with gold-tone case and vintage look',17500.00,6,'Yes','img/products/orient_bambino_ra-ap01.jpg','2025-11-16 07:52:52','White','Round','Analog','Brown','Leather'),(21,4,4,'Unisex',1,'Orient Bambino RA-AC0001Y00A','Affordable classic automatic with sunburst dial',15000.00,14,'Yes','img/products/orient_bambino_raac0001y00a.jpg','2025-11-16 07:52:55','Green','Round','Analog','Brown','Leather'),(22,5,5,'Men',1,'Certina DS Action Automatic C032.407.11.051.00','Sport automatic with 200m water resistance and robust build',54000.00,7,'Yes','img/products/certina_ds_action_automatic_c03240711051.jpg','2025-11-16 08:01:37','Black','Round','Analog','Silver','Metal'),(23,5,5,'Men',1,'Certina DS Caimano Powermatic 80 C035.407.36.010.00','Classic automatic with 80-hour reserve and sapphire dress look',42000.00,7,'Yes','img/products/certina_ds_caimano_powermatic80_c03540736010.jpg','2025-11-16 08:01:37','Silver','Round','Analog','Brown','Leather'),(24,5,5,'Women',1,'Certina DS-8 Automatic C033.051.11.011.00','Elegant women’s automatic with diamond markers',46000.00,5,'Yes','img/products/certina_ds8_automatic_c03305111011.jpg','2025-11-16 08:01:37','White','Round','Analog','Silver','Metal'),(25,5,5,'Men',1,'Certina DS Podium GMT C021.429.11.051.00','GMT automatic with sporty styling and ceramic bezel',48000.00,6,'Yes','img/products/certina_ds_podium_gmt_c02142911051.jpg','2025-11-16 08:01:37','Blue','Round','Analog','Silver','Metal'),(26,5,5,'Unisex',1,'Certina DS First Lady C014.210.11.116.00','Stylish automatic for women with mother-of-pearl dial',44000.00,9,'Yes','img/products/certina_ds_first_lady_c01421011116.jpg','2025-11-16 08:01:37','White','Round','Analog','Silver','Metal'),(27,1,1,'Men',2,'Seiko Presage Sharp Edged SPB167','A premium automatic with a crisp textured dial inspired by Japanese Asanoha patterns.',42000.00,5,'Yes','img/products/seiko_presage_spb167.jpg','2025-11-17 21:01:05','White','Round','Analog','Black','Leather'),(28,1,5,'Men',2,'Seiko Prospex Samurai SRPC93K1','Angular case diver with strong wrist presence and 200m WR.',30000.00,11,'Yes','img/products/seiko_prospex_samurai_srpc93.jpg','2025-11-17 21:01:05','Blue','Round','Analog','Blue','Rubber'),(29,1,2,'Unisex',2,'Seiko 5 Sports SRPE51','Modern field-style automatic with simplified dial.',17000.00,20,'Yes','img/products/seiko_5_sports_srpe51.jpg','2025-11-17 21:01:05','Gray','Round','Analog','Silver','Metal'),(30,1,3,'Women',2,'Seiko Essentials SUR877P1','Minimalist quartz watch perfect for elegant daily wear.',14000.00,8,'Yes','img/products/seiko_essentials_sur877.jpg','2025-11-17 21:01:05','Silver','Round','Analog','Silver','Metal'),(31,1,1,'Men',2,'Seiko Presage SRPG09J1','Warm-tone dial with classical dress design and automatic movement.',28000.00,11,'Yes','img/products/seiko_presage_srpg09.jpg','2025-11-17 21:01:05','Brown','Round','Analog','Brown','Leather'),(32,2,2,'Men',2,'Hamilton Khaki Field Auto Chrono H71616535','Military-inspired automatic chronograph with rugged charm.',55000.00,6,'Yes','img/products/hamilton_khaki_auto_chrono.jpg','2025-11-17 21:01:05','Black','Round','Analog','Brown','Leather'),(33,2,1,'Men',2,'Hamilton Jazzmaster Open Heart H32565735','Dress watch showcasing the movement through an open-heart dial.',48000.00,9,'Yes','img/products/hamilton_jazzmaster_openheart.jpg','2025-11-17 21:01:05','Blue','Round','Analog','Silver','Metal'),(34,2,1,'Women',2,'Hamilton American Classic Ardmore Quartz H11221514','Art-deco inspired rectangular ladies watch on leather strap.',25000.00,7,'Yes','img/products/hamilton_ardmore.jpg','2025-11-17 21:01:05','White','Rectangle','Analog','Brown','Leather'),(35,2,2,'Men',2,'Hamilton Khaki Navy Scuba Auto H82335131','Automatic diver with bright blue dial and sporty bezel.',37000.00,10,'Yes','img/products/hamilton_khaki_navy_scuba.jpg','2025-11-17 21:01:05','Blue','Round','Analog','Silver','Metal'),(36,2,3,'Unisex',2,'Hamilton Ventura Quartz H24411232','Modern triangular watch with iconic futuristic styling.',36000.00,5,'Yes','img/products/hamilton_ventura_quartz.jpg','2025-11-17 21:01:05','White','Triangular','Analog','Black','Leather'),(37,3,1,'Men',2,'Tissot Heritage Visodate T019.430.16.051.01','Classic heritage automatic with domed crystal and day-date.',31000.00,14,'Yes','img/products/tissot_visodate.jpg','2025-11-17 21:01:05','Black','Round','Analog','Black','Leather'),(38,3,3,'Men',2,'Tissot Supersport Chrono T125.617.33.051.00','Bold chronograph with sporty black PVD case.',28000.00,8,'Yes','img/products/tissot_supersport.jpg','2025-11-17 21:01:05','Black','Round','Analog','Black','Leather'),(39,3,1,'Women',2,'Tissot Flamingo T094.210.11.121.00','Slim and elegant ladies watch with mother-of-pearl dial.',22000.00,9,'Yes','img/products/tissot_flamingo.jpg','2025-11-17 21:01:05','White','Round','Analog','Silver','Metal'),(40,3,5,'Men',2,'Tissot Seastar 2000 Professional T120.607.17.041.00','ISO-rated diver with ceramic bezel and 600m WR.',60000.00,6,'Yes','img/products/tissot_seastar2000.jpg','2025-11-17 21:01:05','Blue','Round','Analog','Black','Rubber'),(41,3,3,'Unisex',2,'Tissot Classic Dream T129.410.11.051.00','Reliable quartz watch with clean and versatile design.',15000.00,20,'Yes','img/products/tissot_classic_dream.jpg','2025-11-17 21:01:05','Black','Round','Analog','Silver','Metal'),(42,4,4,'Men',2,'Orient Star Classic RE-AU0004B00B','Premium Orient automatic with power reserve indicator.',30000.00,5,'Yes','img/products/orient_star_classic.jpg','2025-11-17 21:01:05','Black','Round','Analog','Black','Leather'),(43,4,3,'Men',2,'Orient Kamasu RA-AA0002L19B','Highly popular diver with sapphire crystal and 200m WR.',17000.00,18,'Yes','img/products/orient_kamasu_blue.jpg','2025-11-17 21:01:05','Blue','Round','Analog','Silver','Metal'),(44,4,4,'Women',2,'Orient Contemporary Ladies RA-NR2002A','Dressy ladies automatic with gold-tone accents.',16000.00,7,'Yes','img/products/orient_contemporary_gold.jpg','2025-11-17 21:01:05','White','Round','Analog','Gold','Metal'),(45,4,3,'Unisex',2,'Orient Sports RA-AC0J02B10B','Sporty automatic with stealth black theme.',15500.00,13,'Yes','img/products/orient_sports_black.jpg','2025-11-17 21:01:05','Black','Round','Analog','Black','Rubber'),(46,5,5,'Men',2,'Certina DS Action Diver Titanium C032.607.44.051.00','Lightweight titanium diver with Powermatic 80 movement.',62000.00,5,'Yes','img/products/certina_ds_action_titanium.jpg','2025-11-17 21:01:05','Black','Round','Analog','Gray','Metal'),(47,5,4,'Men',2,'Certina DS-1 Automatic C029.807.11.051.00','Elegant automatic with vintage-inspired dial.',43000.00,10,'Yes','img/products/certina_ds1_auto.jpg','2025-11-17 21:01:05','Black','Round','Analog','Silver','Metal'),(48,5,3,'Unisex',2,'Certina Urban DS C021.610.11.031.00','Modern quartz watch ideal for everyday city wear.',24000.00,15,'Yes','img/products/certina_urban_ds.jpg','2025-11-17 21:01:05','Silver','Round','Analog','Silver','Metal');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -658,7 +631,7 @@ CREATE TABLE `revenue` (
 
 LOCK TABLES `revenue` WRITE;
 /*!40000 ALTER TABLE `revenue` DISABLE KEYS */;
-INSERT INTO `revenue` VALUES (1,104000.00),(2,42000.00);
+INSERT INTO `revenue` VALUES (1,104000.00),(2,240000.00);
 /*!40000 ALTER TABLE `revenue` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -718,6 +691,374 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES (1,1,'Algen','Abagat','algen_abagat@zeit.com','$2y$10$kOFXnhncFD3DcKz.3SyIV.Hd9UbcofzMsPwf1qeDC7TcRSeKiPB8q','09171234567','2025-11-05'),(2,1,'Cody','Casem','cody_casem@zeit.com','$2y$10$tkEhOOaeq7PpWLeQUAN92OoD4fgzoWFRtApfmnU28gvrgyJM3tgkO','09181234567','2025-11-05'),(3,1,'Albrecht','Coliat','albrech_coliat@zeit.com','$2y$10$6nk5snJfFCpvpEF7Oaj.8u2YCzwnWCp4BiXChW/oWZHhhcpaxGEbi','09991234567','2025-11-05'),(4,1,'Ken','Latido','ken_latido@zeit.com','$2y$10$jGSdgzYeS7gA66cUqA3HuetSN6c8u4VFAtStWuIa/9Tb0EoTRC4mS','09998726337','2025-11-05'),(5,2,'Michael','Jackson','michael.jackson@zeit.com','$2y$10$QhiCPxfVo6ANBnYM8QwZHeJ/EhF9MWsURvd.hpTBxIg3nQ40fALhS','09201234567','2025-11-05'),(6,3,'Frank','Sinatra','fsinatra@gmail.com','$2y$10$fXqwx/GVc1qEw9IMMLWVw.MdnASiqRq.8Goa9TuuuThP/0Ij0z/Om','09351234567','2025-11-05'),(7,3,'Roja ','Dove','rojadove@gmail.com','$2y$10$FYe3VmEVRUTq9GtvNT.O6OD419ckSsGy8/GeZ0H/UQIZ/T1og/nlm',NULL,'2025-11-09'),(8,3,'Kanye','West','yeezy@gmail.com','$2y$10$ypxait/PnhKON04U9srRNueEjwggxvdQaxiIbGVrsgjabDY4KGjDG','09165695316','2025-11-10'),(10,3,'Frank','Ocean','blonded@gmail.com','$2y$10$v/Qa/KVQcrr0fidL4haIGeyTu9UwvV0C2cQ8gJKERrdxppe41W6oi','09999999999','2025-11-16');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'watch_db'
+--
+/*!50003 DROP PROCEDURE IF EXISTS `AddToCart` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddToCart`(
+    IN user_id_param INT,
+    IN product_id_param INT,
+    IN quantity_param INT,
+    OUT success BOOLEAN,
+    OUT message VARCHAR(255)
+)
+BEGIN
+    DECLARE existing_quantity INT;
+    DECLARE current_stock INT;
+    
+    -- Check if product exists and has stock
+    SELECT stock INTO current_stock 
+    FROM products 
+    WHERE product_id = product_id_param AND is_available = 'Yes';
+    
+    IF current_stock IS NULL THEN
+        SET success = FALSE;
+        SET message = 'Product not found or unavailable';
+    ELSEIF current_stock < quantity_param THEN
+        SET success = FALSE;
+        SET message = 'Insufficient stock';
+    ELSE
+        -- Check if item already in cart
+        SELECT quantity INTO existing_quantity 
+        FROM cart 
+        WHERE user_id = user_id_param AND product_id = product_id_param;
+        
+        IF existing_quantity IS NOT NULL THEN
+            -- Update existing cart item
+            UPDATE cart 
+            SET quantity = quantity + quantity_param 
+            WHERE user_id = user_id_param AND product_id = product_id_param;
+        ELSE
+            -- Add new cart item
+            INSERT INTO cart (user_id, product_id, quantity) 
+            VALUES (user_id_param, product_id_param, quantity_param);
+        END IF;
+        
+        SET success = TRUE;
+        SET message = 'Item added to cart successfully';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `CalculateCartTotal` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CalculateCartTotal`(IN user_id_param INT, OUT total_amount DECIMAL(10,2))
+BEGIN
+    SELECT COALESCE(SUM(p.price * c.quantity), 0) INTO total_amount
+    FROM cart c
+    JOIN products p ON c.product_id = p.product_id
+    WHERE c.user_id = user_id_param;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `GetBranchRevenue` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetBranchRevenue`(IN branch_id_param INT)
+BEGIN
+    SELECT b.branch_name, COALESCE(r.total_revenue, 0) as total_revenue
+    FROM branches b
+    LEFT JOIN revenue r ON b.branch_id = r.branch_id
+    WHERE b.branch_id = branch_id_param;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `GetOrderDetails` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetOrderDetails`(IN order_id_param INT)
+BEGIN
+    SELECT o.order_id, o.order_date, o.status, o.total_amount,
+           u.first_name, u.last_name, b.branch_name,
+           p.product_name, oi.quantity, oi.price as item_price
+    FROM orders o
+    JOIN users u ON o.user_id = u.user_id
+    LEFT JOIN branches b ON o.branch_id = b.branch_id
+    JOIN order_items oi ON o.order_id = oi.order_id
+    JOIN products p ON oi.product_id = p.product_id
+    WHERE o.order_id = order_id_param;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `GetProductsByBranch` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetProductsByBranch`(IN branch_id_param INT)
+BEGIN
+    SELECT p.product_id, p.product_name, b.brand_name, c.category_name, p.price, p.stock
+    FROM products p
+    JOIN brands b ON p.brand_id = b.brand_id
+    JOIN categories c ON p.category_id = c.category_id
+    WHERE p.branch_id = branch_id_param
+    ORDER BY p.product_name;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `GetUserCart` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetUserCart`(IN user_id_param INT)
+BEGIN
+    SELECT c.cart_id, p.product_name, p.price, c.quantity, (p.price * c.quantity) as total_price
+    FROM cart c
+    JOIN products p ON c.product_id = p.product_id
+    WHERE c.user_id = user_id_param
+    ORDER BY c.date_added DESC;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `GetUserOrderHistory` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetUserOrderHistory`(IN user_id_param INT)
+BEGIN
+    SELECT o.order_id, o.order_date, o.status, o.total_amount,
+           COUNT(oi.order_item_id) as item_count,
+           b.branch_name
+    FROM orders o
+    LEFT JOIN branches b ON o.branch_id = b.branch_id
+    LEFT JOIN order_items oi ON o.order_id = oi.order_id
+    WHERE o.user_id = user_id_param
+    GROUP BY o.order_id
+    ORDER BY o.order_date DESC;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `ProcessOrder` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ProcessOrder`(
+    IN user_id_param INT,
+    IN branch_id_param INT,
+    IN payment_method_id_param INT,
+    OUT order_id_result INT,
+    OUT success BOOLEAN,
+    OUT message VARCHAR(255)
+)
+BEGIN
+    DECLARE cart_total DECIMAL(10,2);
+    DECLARE cart_item_count INT;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SET success = FALSE;
+        SET message = 'Error processing order';
+    END;
+    
+    START TRANSACTION;
+    
+    -- Calculate cart total
+    CALL CalculateCartTotal(user_id_param, cart_total);
+    
+    -- Check if cart has items
+    SELECT COUNT(*) INTO cart_item_count FROM cart WHERE user_id = user_id_param;
+    
+    IF cart_item_count = 0 THEN
+        SET success = FALSE;
+        SET message = 'Cart is empty';
+        ROLLBACK;
+    ELSE
+        -- Create order
+        INSERT INTO orders (user_id, branch_id, total_amount, status)
+        VALUES (user_id_param, branch_id_param, cart_total, 'Pending');
+        
+        SET order_id_result = LAST_INSERT_ID();
+        
+        -- Add order items
+        INSERT INTO order_items (order_id, product_id, quantity, price)
+        SELECT order_id_result, c.product_id, c.quantity, p.price
+        FROM cart c
+        JOIN products p ON c.product_id = p.product_id
+        WHERE c.user_id = user_id_param;
+        
+        -- Create payment record
+        INSERT INTO payments (order_id, amount, payment_method_id, currency_id, status)
+        VALUES (order_id_result, cart_total, payment_method_id_param, 1, 'Completed');
+        
+        -- Update product stock
+        UPDATE products p
+        JOIN cart c ON p.product_id = c.product_id
+        SET p.stock = p.stock - c.quantity
+        WHERE c.user_id = user_id_param;
+        
+        -- Clear user's cart
+        DELETE FROM cart WHERE user_id = user_id_param;
+        
+        -- Update revenue
+        INSERT INTO revenue (branch_id, total_revenue)
+        VALUES (branch_id_param, cart_total)
+        ON DUPLICATE KEY UPDATE total_revenue = total_revenue + cart_total;
+        
+        COMMIT;
+        SET success = TRUE;
+        SET message = 'Order processed successfully';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `SearchProducts` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SearchProducts`(
+    IN search_term VARCHAR(100),
+    IN category_id_param INT,
+    IN brand_id_param INT,
+    IN min_price DECIMAL(10,2),
+    IN max_price DECIMAL(10,2)
+)
+BEGIN
+    SELECT p.product_id, p.product_name, b.brand_name, c.category_name, 
+           p.price, p.stock, p.image_url
+    FROM products p
+    JOIN brands b ON p.brand_id = b.brand_id
+    JOIN categories c ON p.category_id = c.category_id
+    WHERE (search_term IS NULL OR p.product_name LIKE CONCAT('%', search_term, '%'))
+      AND (category_id_param IS NULL OR p.category_id = category_id_param)
+      AND (brand_id_param IS NULL OR p.brand_id = brand_id_param)
+      AND (min_price IS NULL OR p.price >= min_price)
+      AND (max_price IS NULL OR p.price <= max_price)
+      AND p.is_available = 'Yes'
+    ORDER BY p.product_name;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `UpdateProductStock` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdateProductStock`(
+    IN product_id_param INT,
+    IN quantity_change INT,
+    OUT new_stock INT,
+    OUT success BOOLEAN
+)
+BEGIN
+    DECLARE current_stock INT;
+    
+    SELECT stock INTO current_stock 
+    FROM products 
+    WHERE product_id = product_id_param;
+    
+    IF current_stock + quantity_change >= 0 THEN
+        UPDATE products 
+        SET stock = stock + quantity_change 
+        WHERE product_id = product_id_param;
+        
+        SELECT stock INTO new_stock 
+        FROM products 
+        WHERE product_id = product_id_param;
+        
+        SET success = TRUE;
+    ELSE
+        SET new_stock = current_stock;
+        SET success = FALSE;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -728,4 +1069,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-18 10:35:37
+-- Dump completed on 2025-11-18 14:59:04

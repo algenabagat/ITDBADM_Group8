@@ -1,40 +1,35 @@
 <?php
-session_start();
-require 'config.php';
-
-if (!isset($_SESSION['user_id'])) {
-    // If not logged in, redirect to login
-    header("Location: login.php");
-    exit();
-}
-
+if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+require_once 'config.php';
 $conn = getDBConnection($host, $user, $password, $database, $port);
 
-$product_id = $_POST['product_id'];
-$user_id = $_SESSION['user_id'];
-$quantity = 1;
+$user_id = (int)($_SESSION['user_id'] ?? 0);
+$product_id = isset($_POST['product_id']) ? (int)$_POST['product_id'] : 0;
+$quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
 
-// Check if item already in cart
-$sql = "SELECT * FROM cart WHERE user_id = ? AND product_id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $user_id, $product_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    // If product already exists → increase quantity
-    $update = $conn->prepare("UPDATE cart SET quantity = quantity + 1 WHERE user_id = ? AND product_id = ?");
-    $update->bind_param("ii", $user_id, $product_id);
-    $update->execute();
-} else {
-    // Insert new cart row
-    $insert = $conn->prepare("INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)");
-    $insert->bind_param("iii", $user_id, $product_id, $quantity);
-    $insert->execute();
+if (!$user_id || !$product_id) {
+    // handle error / redirect
+    header('Location: shop.php'); exit;
 }
 
-$conn->close();
+// Call stored procedure and capture OUT params via user variables
+$stmt = $conn->prepare("CALL AddToCart(?, ?, ?, @p_success, @p_msg)");
+$stmt->bind_param('iii', $user_id, $product_id, $quantity);
+$stmt->execute();
+$stmt->close();
 
-// Redirect to cart page
-header("Location: cart.php");
-exit();
+// read OUT variables
+$res = $conn->query("SELECT @p_success AS success, @p_msg AS message");
+$row = $res ? $res->fetch_assoc() : null;
+$ok = !empty($row['success']);
+$msg = $row['message'] ?? '';
+
+// redirect back with basic feedback (adapt to your UI)
+if ($ok) {
+    header('Location: cart.php');
+} else {
+    // optionally pass message via GET or session flash
+    $_SESSION['flash_error'] = $msg;
+    header('Location: view-item.php?product_id=' . $product_id);
+}
+exit;
