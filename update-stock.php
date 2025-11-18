@@ -40,13 +40,46 @@ if ($stock < 0) {
     exit();
 }
 
-// Update the stock in the database
-$update_query = "UPDATE products SET stock = ? WHERE product_id = ?";
-$stmt = $conn->prepare($update_query);
-$stmt->bind_param("ii", $stock, $product_id);
+// Calculate quantity change (difference between new stock and current stock)
+// First get current stock to calculate the change
+$current_stock_query = "SELECT stock FROM products WHERE product_id = ?";
+$stmt = $conn->prepare($current_stock_query);
+$stmt->bind_param("i", $product_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$product_data = $result->fetch_assoc();
+
+if (!$product_data) {
+    echo json_encode(['success' => false, 'message' => 'Product not found']);
+    exit();
+}
+
+$current_stock = $product_data['stock'];
+$quantity_change = $stock - $current_stock;
+
+// Call stored procedure to update product stock
+$procedure_query = "CALL UpdateProductStock(?, ?, @new_stock, @success)";
+$stmt = $conn->prepare($procedure_query);
+$stmt->bind_param("ii", $product_id, $quantity_change);
 
 if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'message' => 'Stock updated successfully']);
+    // Get the output parameters from the stored procedure
+    $result = $conn->query("SELECT @new_stock as new_stock, @success as success");
+    $output = $result->fetch_assoc();
+    
+    if ($output['success']) {
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Stock updated successfully',
+            'new_stock' => $output['new_stock']
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Insufficient stock: Cannot set stock to negative value',
+            'current_stock' => $current_stock
+        ]);
+    }
 } else {
     echo json_encode(['success' => false, 'message' => 'Failed to update stock: ' . $conn->error]);
 }

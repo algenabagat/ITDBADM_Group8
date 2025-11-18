@@ -100,26 +100,57 @@ if ($conn) {
 
             <?php
             if ($conn) {
-                $oStmt = $conn->prepare('SELECT order_id, total_amount, status, order_date FROM orders WHERE user_id = ? ORDER BY order_date DESC');
-                if ($oStmt) {
-                    $oStmt->bind_param('i', $user_id);
-                    $oStmt->execute();
-                    $oRes = $oStmt->get_result();
+                // Use stored procedure GetUserOrderHistory to fetch user's orders
+                $orders = [];
+                $stmt = $conn->prepare("CALL GetUserOrderHistory(?)");
+                if ($stmt) {
+                    $stmt->bind_param('i', $user_id);
+                    $stmt->execute();
 
-                    if ($oRes && $oRes->num_rows > 0) {
+                    if (method_exists($stmt, 'get_result')) {
+                        $res = $stmt->get_result();
+                        while ($r = $res->fetch_assoc()) {
+                            $orders[] = $r;
+                        }
+                        if (isset($res)) $res->free();
+                    } else {
+                        // fallback for environments without mysqlnd
+                        $stmt->bind_result($oid, $odate, $ostatus, $ototal, $item_count, $branch_name);
+                        while ($stmt->fetch()) {
+                            $orders[] = [
+                                'order_id' => $oid,
+                                'order_date' => $odate,
+                                'status' => $ostatus,
+                                'total_amount' => $ototal,
+                                'item_count' => $item_count,
+                                'branch_name' => $branch_name
+                            ];
+                        }
+                    }
+
+                    $stmt->close();
+                    // drain extra resultsets to avoid "commands out of sync"
+                    while ($conn->more_results() && $conn->next_result()) {
+                        $extra = $conn->use_result();
+                        if ($extra) $extra->free();
+                    }
+
+                    if (!empty($orders)) {
                         echo '<div class="table-responsive"><table class="table">';
                         echo '<thead><tr><th>Order #</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>';
-                        while ($order = $oRes->fetch_assoc()) {
-                            $oid = (int)$order['order_id'];
-                            $date = htmlspecialchars($order['order_date'], ENT_QUOTES, 'UTF-8');
-                            $total = number_format((float)$order['total_amount'], 2);
-                            $status = htmlspecialchars($order['status'], ENT_QUOTES, 'UTF-8');
-                            
+                        foreach ($orders as $order) {
+                            $oid = (int)($order['order_id'] ?? 0);
+                            $date = htmlspecialchars($order['order_date'] ?? '', ENT_QUOTES, 'UTF-8');
+                            $total = number_format((float)($order['total_amount'] ?? 0), 2);
+                            $status = htmlspecialchars($order['status'] ?? '', ENT_QUOTES, 'UTF-8');
+
+                            // preserve original status -> class mapping (case-insensitive)
+                            $statusLower = strtolower($status);
                             $statusClass = '';
-                            if ($status === 'pending') $statusClass = 'status-pending';
-                            if ($status === 'completed') $statusClass = 'status-completed';
-                            if ($status === 'shipped') $statusClass = 'status-shipped';
-                            
+                            if ($statusLower === 'pending') $statusClass = 'status-pending';
+                            if ($statusLower === 'completed') $statusClass = 'status-completed';
+                            if ($statusLower === 'shipped') $statusClass = 'status-shipped';
+
                             echo "<tr>
                                     <td>#{$oid}</td>
                                     <td>{$date}</td>
@@ -132,7 +163,6 @@ if ($conn) {
                     } else {
                         echo '<p>No orders made yet.</p>';
                     }
-                    $oStmt->close();
                 } else {
                     echo '<p>Unable to load orders.</p>';
                 }

@@ -22,8 +22,8 @@ $branch_id = intval($data['branch_id']);
 try {
     $conn = getDBConnection($host, $user, $password, $database, $port);
     
-    // Query branch revenue from the 'revenue' table
-    $query = "SELECT COALESCE(total_revenue, 0) as revenue FROM revenue WHERE branch_id = ?";
+    // Call stored procedure to get branch revenue
+    $query = "CALL GetBranchRevenue(?)";
     $stmt = $conn->prepare($query);
     
     if (!$stmt) {
@@ -36,13 +36,20 @@ try {
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
     
-    // If a row is found, use its revenue; otherwise, default to 0
-    $revenue = $row['revenue'] ?? 0;
+    // If a row is found, use its data; otherwise, set defaults
+    if ($row) {
+        $revenue = $row['total_revenue'] ?? 0;
+        $branch_name = $row['branch_name'] ?? 'Unknown Branch';
+    } else {
+        $revenue = 0;
+        $branch_name = 'Branch Not Found';
+    }
     
     echo json_encode([
         'success' => true,
         'revenue' => $revenue,
-        'branch_id' => $branch_id
+        'branch_id' => $branch_id,
+        'branch_name' => $branch_name
     ]);
     
     $stmt->close();
