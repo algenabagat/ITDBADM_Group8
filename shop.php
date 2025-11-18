@@ -285,7 +285,7 @@ if ($conn) {
                      WHERE 1=1";
           
           // Build count query
-          $countSql = $baseSql;
+          $countSql = "SELECT COUNT(*) AS cnt FROM products p LEFT JOIN brands b ON p.brand_id = b.brand_id LEFT JOIN categories c ON p.category_id = c.category_id WHERE 1=1";
           $filters = [];
           $params = [];
           $types = '';
@@ -352,23 +352,31 @@ if ($conn) {
               $types .= 's';
           }
 
-          // Apply filters to count query
+          // Apply filters to count query (same filters as main query)
           if (count($filters) > 0) {
               $countSql .= " AND " . implode(" AND ", $filters);
           }
 
-          // Execute count query
+          // Execute count query (returns single row with cnt)
           $stmt = $conn->prepare($countSql);
           if ($stmt) {
               if (!empty($params)) {
                   $stmt->bind_param($types, ...$params);
               }
               $stmt->execute();
-              $cntRes = $stmt->get_result();
-              
-              if ($cntRes) {
-                  $totalProducts = (int)($cntRes->fetch_assoc()['cnt'] ?? 0);
-                  $cntRes->free();
+              if (method_exists($stmt, 'get_result')) {
+                  $cntRes = $stmt->get_result();
+                  if ($cntRes) {
+                      $row = $cntRes->fetch_assoc();
+                      $totalProducts = (int)($row['cnt'] ?? 0);
+                      $cntRes->free();
+                  }
+              } else {
+                  // fallback when mysqlnd not available
+                  $stmt->bind_result($cnt);
+                  if ($stmt->fetch()) {
+                      $totalProducts = (int)($cnt ?? 0);
+                  }
               }
               $stmt->close();
           }
@@ -400,10 +408,14 @@ if ($conn) {
       <div class="products-container">
         <p>
           <?php
-            if ($totalProducts === 0) {
-                echo "No items found for the selected criteria.";
+            // If the query returned rows, show the returned range and total.
+            if (isset($result) && $result->num_rows > 0) {
+                $end = $displayEnd;
+                echo "Items {$displayStart} - {$end}";
             } else {
-                echo "Items {$displayStart} - " . max($displayStart, $displayEnd) . " of {$totalProducts}";
+                if ($totalProducts === 0) {
+                    echo "No items found for the selected criteria.";
+                }
             }
           ?>
         </p>
