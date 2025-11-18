@@ -24,22 +24,6 @@
       <div class="filter-bar">
           <div class ="filter-current">
             FILTER: 
-            <span class="current-filter">
-              <?php
-                $activeFilters = [];
-                if(!empty($_GET['brands'])) $activeFilters[] = "Brand: " . htmlspecialchars($_GET['brands']);
-                if(!empty($_GET['categories'])) $activeFilters[] = "Category: " . htmlspecialchars($_GET['categories']);
-                if(!empty($_GET['gender'])) $activeFilters[] = "Gender: " . htmlspecialchars($_GET['gender']);
-                if(!empty($_GET['price'])) $activeFilters[] = "Price: ₱" . number_format($_GET['price'], 2);
-                if(!empty($_GET['dial_color'])) $activeFilters[] = "Dial Color: " . htmlspecialchars($_GET['dial_color']);
-                if(!empty($_GET['dial_shape'])) $activeFilters[] = "Dial Shape: " . htmlspecialchars($_GET['dial_shape']);
-                if(!empty($_GET['dial_type'])) $activeFilters[] = "Dial Type: " . htmlspecialchars($_GET['dial_type']);
-                if(!empty($_GET['strap_color'])) $activeFilters[] = "Strap Color: " . htmlspecialchars($_GET['strap_color']);
-                if(!empty($_GET['strap_material'])) $activeFilters[] = "Strap Material: " . htmlspecialchars($_GET['strap_material']);
-                
-                echo !empty($activeFilters) ? implode(', ', $activeFilters) : 'All';
-              ?>
-            </span>
           </div>
           <div class="filter-line-border"></div>
         <div class="filter-row">
