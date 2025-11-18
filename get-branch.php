@@ -14,7 +14,7 @@ if (!isset($_GET['branch_id'])) {
 }
 
 $branch_id = intval($_GET['branch_id']);
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 $stmt = $conn->prepare('SELECT * FROM branches WHERE branch_id = ?');
 $stmt->bind_param('i', $branch_id);

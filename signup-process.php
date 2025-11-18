@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 $firstName = trim($_POST['firstName'] ?? '');
 $lastName  = trim($_POST['lastName'] ?? '');

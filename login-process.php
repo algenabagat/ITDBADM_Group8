@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['email']) || empty($_P
 $email = trim($_POST['email']);
 $inputPassword = $_POST['password'];
 
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 if (!$conn) {
     header('Location: login.php?error=' . urlencode('DB connection error'));
     exit;

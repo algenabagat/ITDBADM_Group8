@@ -26,7 +26,7 @@ if ($full_name === '' || $address === '' || $phone === '' || $email === '' || $p
     exit;
 }
 
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 // fetch cart again 
 $cartItems = [];

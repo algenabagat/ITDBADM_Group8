@@ -15,7 +15,7 @@ if (!$input || !isset($input['branch_id'])) {
 }
 
 $branch_id = intval($input['branch_id']);
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 $stmt = $conn->prepare('DELETE FROM branches WHERE branch_id = ?');
 $stmt->bind_param('i', $branch_id);

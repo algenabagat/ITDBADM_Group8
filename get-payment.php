@@ -14,7 +14,7 @@ if (!isset($_GET['payment_id'])) {
 }
 
 $payment_id = intval($_GET['payment_id']);
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 $stmt = $conn->prepare("SELECT p.*, pm.method_name FROM payments p LEFT JOIN payment_methods pm ON p.payment_method_id = pm.payment_method_id WHERE p.payment_id = ?");
 $stmt->bind_param('i', $payment_id);

@@ -14,7 +14,7 @@ if (empty($_SESSION['user_id'])) {
 $tab = $_GET['tab'] ?? 'overview';
 $user_id = (int)$_SESSION['user_id'];
 
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 // fetch user info
 $userData = null;

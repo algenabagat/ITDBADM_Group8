@@ -15,7 +15,7 @@ if ($cart_id <= 0 || $quantity <= 0) {
     exit;
 }
 
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 if (!$conn) {
     header("Location: cart.php?error=" . urlencode("Database error."));
     exit;

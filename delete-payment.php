@@ -15,7 +15,7 @@ if (!$input || !isset($input['payment_id'])) {
 }
 
 $payment_id = intval($input['payment_id']);
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 $stmt = $conn->prepare('DELETE FROM payments WHERE payment_id = ?');
 $stmt->bind_param('i', $payment_id);

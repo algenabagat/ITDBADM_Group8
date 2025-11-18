@@ -15,7 +15,7 @@ if (empty($_SESSION['last_order'])) {
 $last = $_SESSION['last_order'];
 $order_id = (int)$last['order_id'];
 
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 $orderItems = [];
 
 if ($conn) {

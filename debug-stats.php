@@ -2,7 +2,7 @@
 session_start();
 require_once 'config.php';
 
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 echo "<pre>";
 echo "=== DATABASE DEBUG ===\n\n";

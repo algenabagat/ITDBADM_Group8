@@ -27,7 +27,7 @@ if ($month < 1 || $month > 12 || $year < 2000 || $year > 2100) {
 }
 
 try {
-    $conn = getDBConnection($host, $user, $password, $database, $port);
+    $conn = getDBConnection($servername, $username, $password, $database, $port);
     
     // Query monthly revenue
     $query = "SELECT COALESCE(SUM(total_amount), 0) as revenue FROM orders WHERE MONTH(order_date) = ? AND YEAR(order_date) = ?";

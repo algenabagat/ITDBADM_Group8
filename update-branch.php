@@ -18,7 +18,7 @@ $branch_id = intval($input['branch_id']);
 $name = isset($input['branch_name']) ? trim($input['branch_name']) : null;
 $location = isset($input['location']) ? trim($input['location']) : null;
 
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 $fields = [];
 $params = [];

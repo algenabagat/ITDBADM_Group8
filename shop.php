@@ -1,7 +1,7 @@
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 require_once 'config.php';
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 $selectedBranch = isset($_SESSION['branch_id']) ? (int)$_SESSION['branch_id'] : null;
 

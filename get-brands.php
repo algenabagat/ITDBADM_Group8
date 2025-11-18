@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 $q = "SELECT brand_id, brand_name FROM brands ORDER BY brand_name";
 $result = $conn->query($q);

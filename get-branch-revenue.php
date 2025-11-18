@@ -20,7 +20,7 @@ if (!isset($data['branch_id'])) {
 $branch_id = intval($data['branch_id']);
 
 try {
-    $conn = getDBConnection($host, $user, $password, $database, $port);
+    $conn = getDBConnection($servername, $username, $password, $database, $port);
     
     // Call stored procedure to get branch revenue
     $query = "CALL GetBranchRevenue(?)";

@@ -25,7 +25,7 @@
     <div class="carousel-indicators">
       <?php
       require_once 'config.php';
-      $conn = getDBConnection($host, $user, $password, $database, $port);
+      $conn = getDBConnection($servername, $username, $password, $database, $port);
       
       if ($conn) {
           // Get selected branch from session
@@ -60,7 +60,7 @@
     <div class="carousel-inner">
       <?php
       require_once 'config.php';
-      $conn = getDBConnection($host, $user, $password, $database, $port);
+      $conn = getDBConnection($servername, $username, $password, $database, $port);
       
       if ($conn) {
           // Get selected branch from session
@@ -143,7 +143,7 @@
   <div class='card-section'>
     <?php
     require_once 'config.php';
-    $conn = getDBConnection($host, $user, $password, $database, $port);
+    $conn = getDBConnection($servername, $username, $password, $database, $port);
     
     if ($conn) {
         // Get selected branch from session

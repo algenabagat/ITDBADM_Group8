@@ -16,7 +16,7 @@ if ($product_id <= 0 || $quantity <= 0) {
     exit;
 }
 
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 if (!$conn) {
     header("Location: shop.php?error=" . urlencode("Database connection error."));
     exit;

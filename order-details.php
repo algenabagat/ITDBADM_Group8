@@ -15,7 +15,7 @@ if (!isset($_GET['order_id'])) {
 $order_id = (int)$_GET['order_id'];
 $user_id  = (int)$_SESSION['user_id'];
 
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 if (!$conn) {
     header("Location: profile.php?error=" . urlencode("Database connection error"));
     exit;

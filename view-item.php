@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 // get product id
 $product_id = isset($_GET['product_id']) ? (int)$_GET['product_id'] : 0;

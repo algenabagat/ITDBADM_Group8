@@ -4,7 +4,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 require_once 'config.php';
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 $profileHref = !empty($_SESSION['user_id']) ? 'profile.php' : 'login.php';
 $cartCount = 'SELECT COUNT(*) AS item_count FROM cart WHERE user_id = ?';

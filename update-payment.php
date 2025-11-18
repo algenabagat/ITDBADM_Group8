@@ -20,7 +20,7 @@ $payment_method_id = isset($input['payment_method_id']) ? intval($input['payment
 $currency_id = isset($input['currency_id']) ? intval($input['currency_id']) : null;
 $status = isset($input['status']) ? $input['status'] : null;
 
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 // Build dynamic update
 $fields = [];

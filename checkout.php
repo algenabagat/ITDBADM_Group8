@@ -8,7 +8,7 @@ if (empty($_SESSION['user_id'])) {
 }
 
 $user_id = (int)$_SESSION['user_id'];
-$conn = getDBConnection($host, $user, $password, $database, $port);
+$conn = getDBConnection($servername, $username, $password, $database, $port);
 
 $cartItems = [];
 $total = 0.00;
