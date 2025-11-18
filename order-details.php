@@ -51,6 +51,8 @@ $conn->close();
     <meta charset="utf-8">
     <title>Order #<?php echo $order_id; ?> Details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="img/icon.png">
+
 </head>
 
 <body class="bg-light">
