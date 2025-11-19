@@ -30,7 +30,11 @@ try {
     $conn = getDBConnection($servername, $username, $password, $database, $port);
     
     // Query monthly revenue
-    $query = "SELECT COALESCE(SUM(total_amount), 0) as revenue FROM orders WHERE MONTH(order_date) = ? AND YEAR(order_date) = ?";
+    $query = "SELECT COALESCE(SUM(p.amount), 0) as revenue 
+            FROM orders o 
+            JOIN payments p ON o.order_id = p.order_id 
+            WHERE MONTH(o.order_date) = ? AND YEAR(o.order_date) = ? 
+            AND p.status = 'Completed'";
     $stmt = $conn->prepare($query);
     
     if (!$stmt) {

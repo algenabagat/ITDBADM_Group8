@@ -174,7 +174,14 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                             <p class="stat-number" id="monthlyRevenueAmount">₱<?php 
                                 $currentMonth = date('m');
                                 $currentYear = date('Y');
-                                $mr = $conn->query("SELECT SUM(total_amount) as s FROM orders WHERE MONTH(order_date) = $currentMonth AND YEAR(order_date) = $currentYear")->fetch_assoc();
+                                $mr = $conn->query("
+                                                    SELECT COALESCE(SUM(p.amount), 0) as s 
+                                                    FROM orders o 
+                                                    JOIN payments p ON o.order_id = p.order_id 
+                                                    WHERE MONTH(o.order_date) = $currentMonth 
+                                                    AND YEAR(o.order_date) = $currentYear 
+                                                    AND p.status = 'Completed'
+                                                ")->fetch_assoc();
                                 echo number_format($mr['s'] ?? 0, 2);
                             ?></p>
                         </div>
