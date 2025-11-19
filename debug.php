@@ -12,13 +12,12 @@ $row = $result->fetch_assoc();
 
 echo "<p>Completed Payments Total: ₱" . number_format($row['revenue'] ?? 0, 2) . "</p>";
 
-// Verify this matches your MySQL Workbench result
 echo "<p>Expected: ₱917,000.00</p>";
 echo "<p>Got: ₱" . number_format($row['revenue'] ?? 0, 2) . "</p>";
 
 if (($row['revenue'] ?? 0) == 917000) {
-    echo "<p style='color: green;'>✅ SUCCESS - Query is working!</p>";
+    echo "<p style='color: green;'> SUCCESS - Query is working!</p>";
 } else {
-    echo "<p style='color: red;'>❌ FAILED - Still wrong result</p>";
+    echo "<p style='color: red;'> FAILED - Still wrong result</p>";
 }
 ?>
