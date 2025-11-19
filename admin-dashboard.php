@@ -578,7 +578,8 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                         </div>
                         <div class="stat-card">
                             <h5>Total Revenue</h5>
-                            <p class="stat-number">₱<?php $sum = $conn->query("SELECT SUM(total_amount) as s FROM orders")->fetch_assoc(); echo number_format($sum['s'] ?? 0, 2); ?></p>
+                            <p class="stat-number">₱<?php     $sum = $conn->query("SELECT SUM(amount) AS total FROM payments WHERE status='Completed'")->fetch_assoc(); 
+    echo number_format($sum['total'] ?? 0, 2);  ?></p>
                         </div>
                         <div class="stat-card">
                             <h5>Total Products</h5>
