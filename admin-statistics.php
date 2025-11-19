@@ -107,7 +107,7 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                     <div class="stats-container">
                         <div class="stat-card">
                             <h5>Total Revenue</h5>
-                            <p class="stat-number">₱<?php $sum = $conn->query("SELECT SUM(total_amount) as s FROM orders")->fetch_assoc(); echo number_format($sum['s'] ?? 0, 2); ?></p>
+                            <p class="stat-number">₱<?php $sum = $conn->query("SELECT SUM(amount) AS total FROM payments WHERE status='Completed'")->fetch_assoc(); echo number_format($sum['total'] ?? 0, 2);?></p>
                         </div>
                         <div class="stat-card">
                             <h5>Total Orders</h5>
@@ -175,7 +175,7 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                                 $currentMonth = date('m');
                                 $currentYear = date('Y');
                                 $mr = $conn->query("
-                                                    SELECT COALESCE(SUM(p.amount), 0) as s 
+                                                    SELECT SUM(p.amount) as s 
                                                     FROM orders o 
                                                     JOIN payments p ON o.order_id = p.order_id 
                                                     WHERE MONTH(o.order_date) = $currentMonth 
@@ -303,7 +303,7 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                             </thead>
                             <tbody id="salesTableBody">
                                 <?php
-                                $sales_query = "SELECT o.order_id, o.user_id, CONCAT(u.first_name, ' ', u.last_name) as customer, o.total_amount, o.order_date, o.status FROM orders o JOIN users u ON o.user_id = u.user_id ORDER BY o.order_date DESC LIMIT 100";
+                                $sales_query = "SELECT o.order_id, o.user_id, CONCAT(u.first_name, ' ', u.last_name) as customer, o.total_amount, o.order_date, o.status FROM orders o JOIN users u ON o.user_id = u.user_id ORDER BY o.order_date DESC";
                                 $sales_result = $conn->query($sales_query);
                                 if ($sales_result && $sales_result->num_rows > 0):
                                     while ($sale = $sales_result->fetch_assoc()):

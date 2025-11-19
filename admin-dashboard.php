@@ -368,7 +368,7 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                 <!-- Orders Management -->
                 <section id="orders" class="content-section">
                     <div class="section-header">
-                            <h2>Orders</h2>
+                            <h2>Orders Management</h2>
                             <button class="btn btn-primary" onclick="openModal('addOrder')">Add Order</button>
                         </div>
                     <div class="table-container">
@@ -431,7 +431,7 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                 <!-- Payments Management -->
                 <section id="payments" class="content-section">
                     <div class="section-header">
-                        <h2>Payments</h2>
+                        <h2>Payments Management</h2>
                         <button class="btn btn-primary" onclick="openModal('addPayment')">Add Payment</button>
                     </div>
                     <div class="table-container">
@@ -564,138 +564,7 @@ $user_name = $user_data['first_name'] . ' ' . $user_data['last_name'];
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Statistics: Overview -->
-                <section id="stats-overview" class="content-section stats-section hidden">
-                    <div class="section-header">
-                        <h2>Dashboard Overview</h2>
-                    </div>
-                    <div class="stats-container">
-                        <div class="stat-card">
-                            <h5>Total Orders</h5>
-                            <p class="stat-number"><?php $cnt = $conn->query("SELECT COUNT(*) as c FROM orders")->fetch_assoc(); echo $cnt['c']; ?></p>
-                        </div>
-                        <div class="stat-card">
-                            <h5>Total Revenue</h5>
-                            <p class="stat-number">₱<?php     $sum = $conn->query("SELECT SUM(amount) AS total FROM payments WHERE status='Completed'")->fetch_assoc(); 
-    echo number_format($sum['total'] ?? 0, 2);  ?></p>
-                        </div>
-                        <div class="stat-card">
-                            <h5>Total Products</h5>
-                            <p class="stat-number"><?php $prod = $conn->query("SELECT COUNT(*) as c FROM products")->fetch_assoc(); echo $prod['c']; ?></p>
-                        </div>
-                        <div class="stat-card">
-                            <h5>Total Users</h5>
-                            <p class="stat-number"><?php $users = $conn->query("SELECT COUNT(*) as c FROM users")->fetch_assoc(); echo $users['c']; ?></p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Statistics: Sales -->
-                <section id="stats-sales" class="content-section stats-section hidden">
-                    <div class="section-header">
-                        <h2>Sales Analytics</h2>
-                    </div>
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Customer</th>
-                                    <th>Amount</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $sales_query = "SELECT o.order_id, CONCAT(u.first_name, ' ', u.last_name) as customer, o.total_amount, o.order_date, o.status FROM orders o JOIN users u ON o.user_id = u.user_id ORDER BY o.order_date DESC LIMIT 20";
-                                $sales_result = $conn->query($sales_query);
-                                while ($sale = $sales_result->fetch_assoc()):
-                                ?>
-                                <tr>
-                                    <td><?php echo $sale['order_id']; ?></td>
-                                    <td><?php echo htmlspecialchars($sale['customer']); ?></td>
-                                    <td>₱<?php echo number_format($sale['total_amount'], 2); ?></td>
-                                    <td><?php echo $sale['order_date']; ?></td>
-                                    <td><span class="status-badge <?php echo strtolower(str_replace(' ', '', $sale['status'])); ?>"><?php echo $sale['status']; ?></span></td>
-                                </tr>
-                                <?php endwhile; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <!-- Statistics: Products -->
-                <section id="stats-products" class="content-section stats-section hidden">
-                    <div class="section-header">
-                        <h2>Product Performance</h2>
-                    </div>
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Brand</th>
-                                    <th>Stock</th>
-                                    <th>Available</th>
-                                    <th>Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $prod_query = "SELECT p.product_id, p.product_name, b.brand_name, p.stock, p.is_available, p.price FROM products p LEFT JOIN brands b ON p.brand_id = b.brand_id ORDER BY p.stock DESC";
-                                $prod_result = $conn->query($prod_query);
-                                while ($product = $prod_result->fetch_assoc()):
-                                ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($product['product_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($product['brand_name'] ?? 'N/A'); ?></td>
-                                    <td><?php echo $product['stock']; ?></td>
-                                    <td><span class="status-badge <?php echo $product['is_available'] == 'Yes' ? 'active' : 'inactive'; ?>"><?php echo $product['is_available']; ?></span></td>
-                                    <td>₱<?php echo number_format($product['price'], 2); ?></td>
-                                </tr>
-                                <?php endwhile; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <!-- Statistics: Users -->
-                <section id="stats-users" class="content-section stats-section hidden">
-                    <div class="section-header">
-                        <h2>User Analytics</h2>
-                    </div>
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>User ID</th>
-                                    <th>Name</th>
-                                    <th>Role</th>
-                                    <th>Orders Count</th>
-                                    <th>Total Spent</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $user_query = "SELECT u.user_id, CONCAT(u.first_name, ' ', u.last_name) as name, r.role_name, COUNT(o.order_id) as order_count, COALESCE(SUM(o.total_amount), 0) as total_spent FROM users u LEFT JOIN roles r ON u.role_id = r.role_id LEFT JOIN orders o ON u.user_id = o.user_id GROUP BY u.user_id ORDER BY total_spent DESC";
-                                $user_result = $conn->query($user_query);
-                                while ($user_stat = $user_result->fetch_assoc()):
-                                ?>
-                                <tr>
-                                    <td><?php echo $user_stat['user_id']; ?></td>
-                                    <td><?php echo htmlspecialchars($user_stat['name']); ?></td>
-                                    <td><span class="role-badge <?php echo strtolower($user_stat['role_name']); ?>"><?php echo $user_stat['role_name']; ?></span></td>
-                                    <td><?php echo $user_stat['order_count']; ?></td>
-                                    <td>₱<?php echo number_format($user_stat['total_spent'], 2); ?></td>
-                                </tr>
-                                <?php endwhile; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+                </div> 
             </main>
 
     <!-- Add User Modal -->
